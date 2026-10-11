@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Locale | default "zh-cn" }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <link rel="stylesheet" href="{{ "css/main.css" | relURL }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="{{ "/" | relURL }}">{{ .Site.Title }}</a>
+      <nav class="nav">
+        {{ $current := . }}
+        {{ range .Site.Menus.main }}
+          <a href="{{ .URL }}" class="{{ if or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }}active{{ end }}">{{ .Name }}</a>
+        {{ end }}
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    {{ block "main" . }}{{ end }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>{{ .Site.Params.description }} · Powered by Hugo</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{{ define "main" }}
+<header class="page-head">
+  <h1>{{ .Title }}</h1>
+  {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
+</header>
+
+<ul class="card-list">
+  {{ range .Paginator.Pages }}
+    <li class="card">
+      <a href="{{ .RelPermalink }}">
+        <span class="card-meta">
+          <time>{{ .Date.Format "2006-01-02" }}</time>
+          {{ with .Params.tags }}{{ range . }}<span class="tag">{{ . }}</span>{{ end }}{{ end }}
+        </span>
+        <span class="card-title">{{ .Title }}</span>
+        <span class="card-desc">{{ .Summary | plainify | truncate 100 }}</span>
+      </a>
+    </li>
+  {{ else }}
+    <li class="empty">这里还没有内容。</li>
+  {{ end }}
+</ul>
+
+{{ template "_internal/pagination.html" . }}
+{{ end }}

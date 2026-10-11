@@ -1,0 +1,31 @@
+# 可选：用 GitHub Actions 自动部署到 Cloudflare Pages
+# 若你选择 Cloudflare 控制台直接 Connect to Git，则无需此文件
+
+name: deploy-to-cloudflare-pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.167.0"
+          extended: false
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=my-knowledge-blog

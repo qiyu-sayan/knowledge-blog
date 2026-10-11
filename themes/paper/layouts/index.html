@@ -1,0 +1,57 @@
+{{ define "main" }}
+<section class="hero">
+  <h1>{{ .Site.Title }}</h1>
+  <p class="lead">{{ .Site.Params.description }}</p>
+  <div class="hero-actions">
+    <a class="btn" href="{{ "posts/" | relURL }}">阅读知识</a>
+    <a class="btn-ghost" href="{{ "bookmarks/" | relURL }}">查看收藏</a>
+    <a class="btn-ghost" href="{{ "about/" | relURL }}">关于本站</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>最新知识</h2>
+    <a class="more" href="{{ "posts/" | relURL }}">全部 →</a>
+  </div>
+  <ul class="card-list">
+    {{ range first 5 (where .Site.RegularPages "Section" "posts") }}
+      <li class="card">
+        <a href="{{ .RelPermalink }}">
+          <span class="card-meta">
+            <time>{{ .Date.Format "2006-01-02" }}</time>
+            {{ range .Params.tags }}<span class="tag">{{ . }}</span>{{ end }}
+          </span>
+          <span class="card-title">{{ .Title }}</span>
+          <span class="card-desc">{{ .Summary | plainify | truncate 80 }}</span>
+        </a>
+      </li>
+    {{ else }}
+      <li class="empty">还没有文章，去 content/posts 写一篇吧。</li>
+    {{ end }}
+  </ul>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>近期收藏</h2>
+    <a class="more" href="{{ "bookmarks/" | relURL }}">全部 →</a>
+  </div>
+  <ul class="card-list">
+    {{ range first 5 (where .Site.RegularPages "Section" "bookmarks") }}
+      <li class="card">
+        <a href="{{ .RelPermalink }}">
+          <span class="card-meta">
+            <time>{{ .Date.Format "2006-01-02" }}</time>
+            {{ range .Params.tags }}<span class="tag">{{ . }}</span>{{ end }}
+          </span>
+          <span class="card-title">{{ .Title }}</span>
+          <span class="card-desc">{{ .Summary | plainify | truncate 80 }}</span>
+        </a>
+      </li>
+    {{ else }}
+      <li class="empty">还没有收藏，去 content/bookmarks 添加吧。</li>
+    {{ end }}
+  </ul>
+</section>
+{{ end }}

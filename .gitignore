@@ -1,0 +1,16 @@
+# Hugo build artifacts
+public/
+resources/_gen/
+.hugo_build.lock
+.hugo_build.buildlock
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# secrets
+.env
+.wrangler/

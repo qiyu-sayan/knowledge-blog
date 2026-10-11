@@ -1,0 +1,4 @@
+name = "paper"
+license = "MIT"
+description = "Minimal knowledge blog"
+min_version = "0.146.0"
