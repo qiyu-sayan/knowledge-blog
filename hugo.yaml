@@ -1,5 +1,5 @@
 baseURL: https://example.com/
-locale: zh-cn
+languageCode: zh-cn
 title: 我的知识站
 theme: paper
 future: true
