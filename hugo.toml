@@ -8,6 +8,16 @@ enableRobotsTXT = true
 buildDrafts = false
 buildFuture = true
 
+[languages]
+  [languages.zh-cn]
+    languageName = "Chinese"
+    title = "qiyu-library"
+    weight = 1
+
+    [languages.zh-cn.params.sidebar]
+      subtitle = "知识分享与收藏"
+      emoji = "📚"
+
 [taxonomies]
   tag = "tags"
   category = "categories"
