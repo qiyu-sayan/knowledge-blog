@@ -5,6 +5,7 @@
 
   [social.params]
     icon = "brand-github"
+    newTab = true
 
 [[social]]
   identifier = "rss"
