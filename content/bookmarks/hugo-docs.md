@@ -1,5 +1,6 @@
 ---
 title: Hugo 官方文档
+slug: hugo-docs
 date: 2026-10-09
 description: 静态站生成器 Hugo 的官方文档，查短代码和模板时很好用。
 link: https://gohugo.io/documentation/

@@ -1,0 +1,31 @@
+baseURL = "https://qiyu-library.com/"
+title = "qiyu-library"
+theme = "stack"
+defaultContentLanguage = "zh-cn"
+hasCJKLanguage = true
+
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = true
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[pagination]
+  pagerSize = 12
+
+[permalinks]
+  post = "/p/:slug/"
+  page = "/:slug/"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "monokai"
+    lineNos = false
+
+[outputs]
+  home = ["HTML", "RSS"]

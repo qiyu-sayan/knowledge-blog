@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
+  <rect width="720" height="520" fill="#f4f6f8"/>
+  <!-- sidebar -->
+  <rect x="0" y="0" width="180" height="520" fill="#ffffff"/>
+  <rect x="24" y="32" width="36" height="36" rx="10" fill="#1f2a37"/>
+  <text x="72" y="56" font-size="13" font-weight="700" fill="#1f2a37">qiyu-library</text>
+  <rect x="16" y="100" width="148" height="32" rx="8" fill="#e8f0ee"/>
+  <text x="32" y="120" font-size="12" fill="#2f7d6c">首页</text>
+  <text x="32" y="156" font-size="12" fill="#667782">知识</text>
+  <text x="32" y="188" font-size="12" fill="#667782">收藏</text>
+  <text x="32" y="220" font-size="12" fill="#667782">关于</text>
+  <text x="24" y="480" font-size="11" fill="#9aa8b2">Powered by DoIt</text>
+
+  <!-- main -->
+  <text x="212" y="48" font-size="12" fill="#8b97a1">HOME / 2026</text>
+  <text x="212" y="88" font-size="26" font-weight="700" fill="#1f2a37">知识分享与收藏</text>
+  <text x="212" y="118" font-size="13" fill="#667782">个人知识库 · 持续整理</text>
+
+  <rect x="212" y="150" width="220" height="92" rx="12" fill="#1f2a37"/>
+  <text x="232" y="182" font-size="12" fill="#9fb0bc">文章</text>
+  <text x="232" y="214" font-size="22" font-weight="700" fill="#ffffff">4</text>
+  <rect x="452" y="150" width="220" height="92" rx="12" fill="#dfece8"/>
+  <text x="472" y="182" font-size="12" fill="#4c7368">收藏</text>
+  <text x="472" y="214" font-size="22" font-weight="700" fill="#2f7d6c">4</text>
+
+  <rect x="212" y="270" width="460" height="70" rx="12" fill="#ffffff" stroke="#e3e8ec"/>
+  <text x="232" y="298" font-size="12" fill="#8b97a1">2026-10-10 · 工具</text>
+  <text x="232" y="322" font-size="15" font-weight="650" fill="#1f2a37">Markdown 速查</text>
+
+  <rect x="212" y="356" width="460" height="70" rx="12" fill="#ffffff" stroke="#e3e8ec"/>
+  <text x="232" y="384" font-size="12" fill="#8b97a1">2026-10-01 · 指南</text>
+  <text x="232" y="408" font-size="15" font-weight="650" fill="#1f2a37">欢迎使用知识站</text>
+
+  <rect x="212" y="442" width="460" height="70" rx="12" fill="#ffffff" stroke="#e3e8ec"/>
+  <text x="232" y="470" font-size="12" fill="#8b97a1">2026-10-09 · 收藏</text>
+  <text x="232" y="494" font-size="15" font-weight="650" fill="#1f2a37">Hugo 官方文档</text>
+
+  <text x="440" y="515" text-anchor="middle" font-size="11" fill="#a0b0ba">DoIt · 左侧栏 + 仪表感 · 精致现代</text>
+</svg>

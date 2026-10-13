@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
+  <rect width="720" height="520" fill="#ffffff"/>
+  <rect width="720" height="56" fill="#ffffff"/>
+  <text x="36" y="34" font-size="16" font-weight="700" fill="#2d333a">qiyu-library</text>
+  <text x="420" y="34" font-size="13" fill="#6b7280">首页</text>
+  <text x="470" y="34" font-size="13" fill="#6b7280">知识</text>
+  <text x="520" y="34" font-size="13" fill="#6b7280">收藏</text>
+  <text x="570" y="34" font-size="13" fill="#6b7280">关于</text>
+  <circle cx="660" cy="28" r="12" fill="#eef2f7"/>
+  <line x1="36" y1="56" x2="684" y2="56" stroke="#e5e7eb"/>
+
+  <text x="36" y="110" font-size="28" font-weight="700" fill="#2d333a">知识分享与收藏</text>
+  <text x="36" y="140" font-size="14" fill="#6b7280">个人知识库 · 记录与收藏</text>
+
+  <text x="36" y="190" font-size="18" font-weight="700" fill="#2d333a">文章</text>
+  <text x="36" y="230" font-size="12" fill="#9aa2ad">2026-10-10 · 工具 · 知识</text>
+  <text x="36" y="256" font-size="18" font-weight="600" fill="#2d333a">Markdown 速查</text>
+  <text x="36" y="282" font-size="13" fill="#6b7280">写知识帖时最常用的语法，够用即可。</text>
+  <line x1="36" y1="306" x2="684" y2="306" stroke="#f0f2f5"/>
+
+  <text x="36" y="340" font-size="12" fill="#9aa2ad">2026-10-01 · 指南 · 知识</text>
+  <text x="36" y="366" font-size="18" font-weight="600" fill="#2d333a">欢迎使用知识站</text>
+  <text x="36" y="392" font-size="13" fill="#6b7280">这里用来沉淀知识和收藏。</text>
+  <line x1="36" y1="416" x2="684" y2="416" stroke="#f0f2f5"/>
+
+  <text x="36" y="450" font-size="12" fill="#9aa2ad">2026-10-01</text>
+  <text x="36" y="476" font-size="18" font-weight="600" fill="#2d333a">Hugo 官方文档</text>
+
+  <rect x="36" y="498" width="648" height="8" rx="4" fill="#f3f4f6"/>
+  <text x="360" y="500" text-anchor="middle" font-size="11" fill="#c4c9d0">PaperMod · 极简阅读流 · 大量留白、列表清晰</text>
+</svg>

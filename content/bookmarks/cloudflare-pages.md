@@ -1,5 +1,6 @@
 ---
 title: Cloudflare Pages
+slug: cloudflare-pages
 date: 2026-10-08
 description: 免费静态托管，绑域名、自动 HTTPS，适合个人博客。
 link: https://pages.cloudflare.com/

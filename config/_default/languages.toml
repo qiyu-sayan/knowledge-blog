@@ -1,0 +1,10 @@
+[languages]
+  [languages.zh-cn]
+    locale = "zh-cn"
+    label = "简体中文"
+    title = "qiyu-library"
+    weight = 1
+
+    [languages.zh-cn.params.sidebar]
+      subtitle = "知识分享与收藏"
+      emoji = "📚"
