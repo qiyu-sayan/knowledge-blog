@@ -54,7 +54,7 @@ map.attributionControl.setPrefix(
   "</a></div>"
 );
 
-// ========== 定位（强制拉新 GPS，不吃旧缓存） ==========
+// ========== 定位（反查地名 + 用户确认，防缓存错位） ==========
 let currentLocationMarker = null;
 
 function updateMessage(text, isError = false) {
@@ -87,6 +87,88 @@ function placeLocationMarker(lat, lng, accuracy, title, jump) {
   if (jump !== false) map.setView([lat, lng], 16);
 }
 
+// 天地图逆地理：把坐标变成「省市区」，让用户肉眼确认是否靠谱
+async function reverseGeocode(lat, lng) {
+  const postStr = encodeURIComponent(JSON.stringify({ lon: lng, lat: lat, ver: 1 }));
+  const url = `https://api.tianditu.gov.cn/geocoder?postStr=${postStr}&type=geocode&tk=${TTD_KEY}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const addr =
+      data?.result?.formatted_address ||
+      data?.result?.addressComponent?.address ||
+      data?.result?.addressComponent?.town ||
+      "";
+    const comp = data?.result?.addressComponent || {};
+    const brief = [comp.province, comp.city, comp.district, comp.town]
+      .filter(Boolean)
+      .join("");
+    return brief || addr || "";
+  } catch (e) {
+    return "";
+  }
+}
+
+function confirmPlaceUI(lat, lng, acc, placeName) {
+  const box = document.getElementById("locConfirm");
+  if (!box) {
+    // 无确认框 DOM 时退回 window.confirm
+    const ok = window.confirm(
+      `定位到：${placeName || "未知地点"}（±${Math.round(acc)} 米）\n\n这是你的当前位置吗？\n选「取消」则不跳转，请在地图上手动点击。`
+    );
+    if (ok) {
+      placeLocationMarker(lat, lng, acc, placeName || "您的当前位置", true);
+      updateMessage(`已使用定位：${placeName}（±${Math.round(acc)} 米）`);
+    } else {
+      updateMessage("已忽略该定位（可能是缓存/错误位置）。请在地图上点击选择真实起点。", true);
+    }
+    return;
+  }
+
+  box.querySelector("#locConfirmText").textContent =
+    `定位到：${placeName || "未知地点"}（±${Math.round(acc)} 米）`;
+  box.classList.add("show");
+
+  const yes = box.querySelector("#locYes");
+  const no = box.querySelector("#locNo");
+
+  const cleanup = () => {
+    box.classList.remove("show");
+    yes.replaceWith(yes.cloneNode(true));
+    no.replaceWith(no.cloneNode(true));
+  };
+
+  box.querySelector("#locYes").addEventListener("click", () => {
+    placeLocationMarker(lat, lng, acc, placeName || "您的当前位置", true);
+    updateMessage(`已使用定位：${placeName || "当前位置"}（±${Math.round(acc)} 米）`);
+    cleanup();
+    resetLocBtn();
+  });
+  box.querySelector("#locNo").addEventListener("click", () => {
+    updateMessage("已忽略该定位。请在地图上点击选择真实起点。", true);
+    cleanup();
+    resetLocBtn();
+  });
+}
+
+async function acceptPosition(pos) {
+  const acc = pos.coords.accuracy || 9999;
+  const lat = pos.coords.latitude;
+  const lng = pos.coords.longitude;
+  updateMessage("正在识别地名，请确认是否正确…");
+  const placeName = await reverseGeocode(lat, lng);
+  if (acc > 1500) {
+    updateMessage(
+      `拒绝使用：精度约 ${Math.round(acc / 1000)} 公里（IP 粗定位）。` +
+        `识别为「${placeName || "未知"}」。请直接点地图选起点。`,
+      true
+    );
+    resetLocBtn();
+    return;
+  }
+  confirmPlaceUI(lat, lng, acc, placeName);
+}
+
 function startLocate() {
   const btn = document.getElementById("getLocationBtn");
   if (!navigator.geolocation) {
@@ -96,9 +178,9 @@ function startLocate() {
 
   btn.disabled = true;
   btn.textContent = "定位中...";
-  updateMessage("正在搜索 GPS / 位置信号…（最多约 12 秒，请允许定位权限）");
+  updateMessage("正在获取位置（强制刷新，不用旧缓存）…请允许定位权限");
 
-  // maximumAge: 0 = 不用浏览器缓存的旧坐标，必须重新解算
+  // maximumAge: 0 必须新算；watchPosition 以拿到更稳的一次
   const options = { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 };
   let watchId = null;
   let best = null;
@@ -117,17 +199,9 @@ function startLocate() {
   function handlePosition(pos) {
     const acc = pos.coords.accuracy || 9999;
     if (!best || acc < (best.coords.accuracy || 9999)) best = pos;
-
-    // GPS 真锁定了（一般 <80m），立刻采用
-    if (acc <= 80) {
-      placeLocationMarker(pos.coords.latitude, pos.coords.longitude, acc, "您的当前位置", true);
-      updateMessage(`定位成功！精度约 ${Math.round(acc)} 米（GPS）。`);
+    if (acc <= 50) {
       finish();
-      return;
-    }
-    // 已经有可接受结果时，短等更优解
-    if (acc <= 150 && best === pos) {
-      updateMessage(`已获取位置（±${Math.round(acc)} 米），继续等待 GPS 提高精度…`);
+      acceptPosition(pos);
     }
   }
 
@@ -135,13 +209,13 @@ function startLocate() {
     let msg = "定位失败，请在地图上手动点击选择位置";
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        msg = "定位失败：位置权限被拒绝。请点地址栏左侧「锁/权限」→ 允许定位，再重试。";
+        msg = "定位失败：位置权限被拒绝。请点地址栏左侧「锁/权限」→ 允许定位后重试。";
         break;
       case error.POSITION_UNAVAILABLE:
-        msg = "定位失败：当前位置不可用。请检查 Windows「定位服务」是否打开，或直接点地图选点。";
+        msg = "定位失败：当前位置不可用。请检查 Windows「定位服务」，或直接点地图。";
         break;
       case error.TIMEOUT:
-        msg = "定位超时：GPS 可能未锁定。可到室外/窗边重试，或直接点地图选点。";
+        msg = "定位超时：可重试，或直接点地图选点。";
         break;
     }
     updateMessage(msg, true);
@@ -150,34 +224,16 @@ function startLocate() {
 
   watchId = navigator.geolocation.watchPosition(handlePosition, handleError, options);
 
-  // 12 秒后结算：只接受真正像 GPS 的结果
   setTimeout(() => {
     if (finished) return;
     if (!best) {
-      updateMessage("未能获取位置（可能 GPS 未锁定 / 权限被拦）。请直接在地图上点击选择起点。", true);
+      updateMessage("未能获取位置。请直接在地图上点击选择起点。", true);
       finish();
       return;
     }
-    const acc = best.coords.accuracy || 9999;
-    const lat = best.coords.latitude;
-    const lng = best.coords.longitude;
-
-    if (acc <= 150) {
-      placeLocationMarker(lat, lng, acc, "您的当前位置", true);
-      updateMessage(`定位成功！精度约 ${Math.round(acc)} 米。`);
-    } else if (acc <= 800) {
-      placeLocationMarker(lat, lng, acc, "大致位置（可能有偏）", true);
-      updateMessage(`定位精度约 ${Math.round(acc)} 米，可能有偏差，建议用地图点击校正起点。`);
-    } else {
-      // 不跳地图，避免又「飞到安义县」
-      updateMessage(
-        `拒绝使用本次定位：精度约 ${Math.round(acc / 1000)} 公里，多半是 IP/缓存的错误位置。` +
-        `地图未跳转。若本机有 GPS：请清一次浏览器位置缓存后再试，或直接点图选点。`,
-        true
-      );
-    }
     finish();
-  }, 12000);
+    acceptPosition(best);
+  }, 8000);
 }
 
 const getLocationBtn = document.getElementById("getLocationBtn");

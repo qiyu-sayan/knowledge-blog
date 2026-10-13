@@ -324,3 +324,17 @@ button:active {
   z-index: 0;
 }
 
+
+/* 定位确认条 */
+.loc-confirm {
+  display: none;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.loc-confirm.show { display: block; }
+.loc-confirm-text { margin-bottom: 8px; color: #9a3412; line-height: 1.5; }
+.loc-confirm-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.loc-confirm .mini-btn { font-size: 12px; padding: 6px 10px; }

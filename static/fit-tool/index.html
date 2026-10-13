@@ -40,6 +40,14 @@
           <button id="generateFit" type="button">生成 FIT 文件</button>
         </div>
         <div id="message" class="message"></div>
+        <!-- 定位结果确认（防止缓存错位） -->
+        <div id="locConfirm" class="loc-confirm">
+          <div id="locConfirmText" class="loc-confirm-text"></div>
+          <div class="loc-confirm-actions">
+            <button id="locYes" type="button" class="mini-btn">是，就用这里</button>
+            <button id="locNo" type="button" class="mini-btn">不对，我自己点图</button>
+          </div>
+        </div>
         <div class="preview-panel">
           <div class="preview-chart">
             <h2>配速预览（min/km）</h2>
