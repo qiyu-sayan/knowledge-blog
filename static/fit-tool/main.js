@@ -112,17 +112,27 @@ if (getLocationBtn) {
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy || 9999;
 
-        // 精度太差（桌面 IP 定位）时明确警告，避免「安义县」误导
-        if (accuracy > 2000) {
-          placeLocationMarker(lat, lng, accuracy, "低精度位置（可能是 IP 大致位置）");
+        // 电脑无 GPS 时常见 IP 粗定位（如运营商出口落在某县），误差可达几十公里。
+        // 规则：精度太差就不跳转地图，避免「定位到安义县」误导。
+        if (accuracy > 1500) {
           updateMessage(
-            `已定位到大致位置，但精度仅约 ${Math.round(accuracy / 1000)} 公里，可能不在您真实位置。` +
-              `建议：手机打开本页并允许定位，或直接在地图上点击选择起点。`,
+            `本次定位不可用：精度仅约 ${Math.round(accuracy / 1000)} 公里` +
+              `（电脑多为 IP 猜测，常落在运营商出口城市，例如南昌一带）。` +
+              `地图不会跳到该点，请直接在地图上点击选择真实起点。`,
             true
+          );
+          resetLocBtn();
+          return;
+        }
+
+        if (accuracy > 300) {
+          placeLocationMarker(lat, lng, accuracy, "大致位置（精度一般）");
+          updateMessage(
+            `定位精度约 ${Math.round(accuracy)} 米，可能有偏差，请以地图点击为准。`
           );
         } else {
           placeLocationMarker(lat, lng, accuracy, "您的当前位置");
-          updateMessage(`定位成功！精度约 ${Math.round(accuracy)} 米。点击地图可从当前位置开始画轨迹。`);
+          updateMessage(`定位成功！精度约 ${Math.round(accuracy)} 米。可从当前位置附近点击画轨迹。`);
         }
         resetLocBtn();
       },
