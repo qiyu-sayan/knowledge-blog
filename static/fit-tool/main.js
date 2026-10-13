@@ -15,6 +15,9 @@ const map = L.map("map", {
 let vecLayer = null;
 let cvaLayer = null;
 
+// 作者的天地图密钥（配额充足，访客无需自备）
+const TTD_KEY = "9fe5d147fae873e0dbf3633968097bfe";
+
 function ttdUrl(layer, key) {
   return (
     "https://t{s}.tianditu.gov.cn/" + layer +
@@ -390,14 +393,16 @@ document.getElementById("previewBtn").addEventListener("click", () => {
 updateDistanceInfo();
 rebuildExportTimes();
 
-// 密钥就绪后再显示地图；无 key 时弹窗
+// 登录通过后加载地图
 document.addEventListener("DOMContentLoaded", () => {
-  const boot = () => {
-    if (window.KeyManager && window.KeyManager.getKey()) {
-      applyTtdKey(window.KeyManager.getKey());
-    } else if (window.KeyManager) {
-      window.KeyManager.show(false);
-    }
-  };
-  boot();
+  const bootMap = () => applyTtdKey(TTD_KEY);
+  if (document.body.classList.contains("app-unlocked")) {
+    bootMap();
+  } else {
+    window.addEventListener("fit-auth-ready", bootMap, { once: true });
+    // 若登录门在本脚本后才绑 DOMContentLoaded，兜底再听一次
+    setTimeout(() => {
+      if (document.body.classList.contains("app-unlocked") && !vecLayer) bootMap();
+    }, 800);
+  }
 });

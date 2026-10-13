@@ -13,52 +13,9 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <!-- 天地图密钥弹窗 -->
-    <div id="keyModal" class="key-modal">
-      <div class="key-modal-card">
-        <h2>登录并设置天地图密钥</h2>
-        <p class="key-tip">
-          本工具需要<strong>你自己的天地图开发者密钥（tk）</strong>来加载地图。
-          密钥只保存在你的浏览器里，不会上传到服务器。
-        </p>
-        <form id="keyForm">
-          <label class="key-label" for="userNameInput">昵称（可选，仅本地记住）</label>
-          <input id="userNameInput" type="text" placeholder="例如：阿牧" autocomplete="nickname" />
-
-          <label class="key-label" for="keyInput">天地图密钥（tk）</label>
-          <input id="keyInput" type="text" placeholder="32 位十六进制，如 9fe5d147…" autocomplete="off" required />
-
-          <label class="key-remember">
-            <input id="rememberCheck" type="checkbox" checked />
-            记住我，下次免登录直接进入
-          </label>
-
-          <div class="key-actions">
-            <button id="keySubmitBtn" type="submit" class="key-btn primary">校验并进入</button>
-            <button id="keySkipBtn" type="button" class="key-btn">跳过校验直接进入</button>
-          </div>
-          <div id="keyStatus" class="key-status"></div>
-        </form>
-        <details class="key-help">
-          <summary>没有密钥？点此查看获取教程</summary>
-          <ol>
-            <li>打开 <a href="https://console.tianditu.gov.cn/" target="_blank" rel="noopener">天地图控制台</a> 注册并登录</li>
-            <li>进入「应用管理」→「创建新应用」</li>
-            <li>类型选<strong>浏览器端</strong>，提交后得到一串 32 位密钥（tk）</li>
-            <li>把密钥粘贴到上方输入框，点「校验并进入」</li>
-          </ol>
-          <p>提示：请勿把密钥发给他人；本页面不会把密钥上传到本站服务器。</p>
-        </details>
-      </div>
-    </div>
-
     <div id="app">
       <div class="sidebar">
         <h1>Fit Tool v1.2</h1>
-        <div class="key-toolbar">
-          <button id="changeKeyBtn" type="button" class="mini-btn">更换密钥</button>
-          <button id="logoutBtn" type="button" class="mini-btn">退出登录</button>
-        </div>
         <div class="form-group">
           <label for="hrRest">静息心率</label>
           <input id="hrRest" type="number" min="30" max="120" value="60" />
@@ -117,7 +74,6 @@
       window.dispatchEvent(new Event("fitsdk-ready"));
     </script>
     <script src="./fit-engine.js"></script>
-    <script src="./key-manager.js"></script>
     <script src="./main.js"></script>
   </body>
 </html>
