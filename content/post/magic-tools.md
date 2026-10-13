@@ -60,16 +60,24 @@ categories: [工具]
 
 ## 4. 下载地址
 
-**说明**：GitHub 国内常打不开。「加速」用于**第一次安装**；**以后更新请用官网 / 官方 Releases**（有节点后即可打开）。
+### 4.1 怎么在国内下载（先看这个）
 
-| 软件 | 国内加速（首装） | 官方（更新） |
-|------|------------------|--------------|
-| Clash Verge | [加速 → 最新版](https://ghfast.top/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) | [GitHub](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
-| Sing-box | [加速 → 最新版](https://ghfast.top/https://github.com/SagerNet/sing-box/releases/latest) | [官网](https://sing-box.sagernet.org/) · [GitHub](https://github.com/SagerNet/sing-box/releases) |
+Clash / Sing-box 官方只发在 **GitHub**，国内直连常失败。常用办法：
 
-加速链接若显示异常，在加速站首页粘贴上方 **GitHub 官方地址** 再打开。
+1. **加速站**：浏览器打开的是加速域名（如 `ghfast.top`），由它去取文件，一般**不用打开 github.com**  
+2. **节点网站自带下载**：很多机场官网有 **「客户端下载」** 页，直接下更省事（注册后看导航）  
+3. **有代理之后**：打开官网 / GitHub Release **更新到最新版**（更安全）
 
-**更新提醒**：能翻出去之后，卸载/覆盖安装请用**官网最新版**，不要长期使用来历不明的「绿色版」。
+### 4.2 软件下载
+
+| 软件 | 国内加速（选一个能开的） | 官方（更新用） |
+|------|--------------------------|----------------|
+| Clash Verge | [ghfast](https://ghfast.top/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) · [ghproxy.net](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) | [GitHub](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
+| Sing-box | [ghfast](https://ghfast.top/https://github.com/SagerNet/sing-box/releases/latest) · [ghproxy.net](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/latest) | [官网](https://sing-box.sagernet.org/) |
+
+- 若某个加速页空白 / Invalid input：换另一个加速域名，或到**节点网站的客户端下载区**  
+- 手机 Android 也可在应用市场搜索 **Clash / sing-box** 相关客户端  
+- **更新**请用官网 / 官方 Release，勿长期使用来历不明的安装包
 
 ## 5. 排错
 
