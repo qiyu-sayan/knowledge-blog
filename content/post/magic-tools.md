@@ -68,36 +68,28 @@ Clash / Sing-box 官方只发在 **GitHub**，国内直连常失败。常用办�
 2. **节点网站自带下载**：很多机场官网有 **「客户端下载」** 页，直接下更省事（注册后看导航）  
 3. **有代理之后**：打开官网 / GitHub Release **更新到最新版**（更安全）
 
-### 4.2 电脑下载
+### 4.2 电脑下载（点一下就开始下）
 
-当前测试：**ghproxy.net 可用**，ghfast 可能打不开。
+| 软件 | 直接下载（Windows x64） | 备用：最新版页面 |
+|------|-------------------------|------------------|
+| Clash Verge **v2.5.8** | [下载 .exe 安装包](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.5.8/Clash.Verge_2.5.8_x64-setup.exe) | [全部版本](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) |
+| Sing-box **v1.14.3** | [下载 .exe 安装包](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/download/v1.14.3/SFW-1.14.3-x64.exe) | [官网](https://sing-box.sagernet.org/) |
 
-| 软件 | 国内加速 | 官方 |
-|------|----------|------|
-| Clash Verge（Win/Mac） | [ghproxy](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) | [GitHub](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
-| Sing-box（Win/Mac） | [ghproxy](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/latest) | [官网](https://sing-box.sagernet.org/) |
+Mac 用户：Clash Verge 可下 [Intel .dmg](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.5.8/Clash.Verge_2.5.8_x64.dmg) 或 [Apple 芯片 .dmg](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.5.8/Clash.Verge_2.5.8_aarch64.dmg)。
 
-### 4.3 手机下载（Android）
+### 4.3 手机下载（点一下就开始下 APK）
 
-点开后**在文件列表里选 APK**，别下错成电脑安装包。
+| 客户端 | 直接下载 APK | 说明 |
+|--------|--------------|------|
+| Clash Meta for Android **v2.11.35** | [下载 APK](https://ghproxy.net/https://github.com/MetaCubeX/ClashMetaForAndroid/releases/download/v2.11.35/cmfa-2.11.35-meta-universal-release.apk) | 通用包，多数手机可用 |
+| FlClash **v0.8.99** | [下载 APK](https://ghproxy.net/https://github.com/chen08209/FlClash/releases/download/v0.8.99/FlClash-0.8.99-android-arm64-v8a.apk) | arm64，一般安卓手机 |
+| SFA（sing-box）**v1.14.3** | [下载 APK](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/download/v1.14.3/SFA-1.14.3-arm64-v8a.apk) | Android 版 sing-box |
 
-| 客户端 | 打开下载（认准文件） | 说明 |
-|--------|----------------------|------|
-| **Clash Meta for Android**（推荐，只发安卓包） | [ghproxy · 安卓下载页](https://ghproxy.net/https://github.com/MetaCubeX/ClashMetaForAndroid/releases/latest) | 下 `cmfa-….apk`，选 **universal** 或 **arm64-v8a** |
-| **FlClash**（界面更漂亮） | [ghproxy · 下载页](https://ghproxy.net/https://github.com/chen08209/FlClash/releases/latest) | 在下面找 **`FlClash-x.x.x-android-arm64-v8a.apk`**（勿选 windows/mac） |
-| **SFA / sing-box** | [ghproxy · 下载页](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/latest) | 文件很多，找 **Android / `.apk`** 相关包 |
+**iOS**：App Store 搜索 `sing-box`，无 apk 直链。
 
-**手机 iOS**
+**装完后**：导入订阅 → 连接 → 模式选 **规则**。
 
-- 只走 **App Store**（搜 `sing-box` 等），无 apk 直链  
-
-**手机怎么用**
-
-1. 安装 APK（需允许「未知来源」）  
-2. 导入机场订阅（和电脑同一串 URL）  
-3. 连接，模式选 **规则**  
-
-> 版本号以你打开页面时的**最新文件**为准；链接用的是 `releases/latest`，更新后仍指向新版。
+**版本更新**：上表为写文时版本。要升级时点「最新版页面 / 官网」，下载**新版本号**的同名安装包。
 
 ## 5. 排错
 
