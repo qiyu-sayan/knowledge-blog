@@ -14,3 +14,4 @@ Thumbs.db
 # secrets
 .env
 .wrangler/
+.deploy-home.html
