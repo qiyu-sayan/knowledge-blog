@@ -2,35 +2,52 @@
 title: "魔法工具"
 slug: magic-tools
 date: 2026-10-13
-description: "Clash Verge 与 Sing-box 快速上手：装软件、导入订阅、节点注册与下载地址。"
+description: "Clash Verge 与 Sing-box 快速上手：安装、订阅、规则/全局模式说明与下载地址。"
 tags: [工具, 教程, Clash, Sing-box]
 categories: [工具]
 ---
 
-电脑用 **Clash Verge**，手机 / 多端可用 **Sing-box**。流程都是：装客户端 → 导入订阅 → 开系统代理或连接。
+电脑常用 **Clash Verge**，手机可用 **Clash 系 / Sing-box** 客户端。流程：装软件 → 导入订阅 → 选模式。
 
-> 文末注册链接为**邀请链接**。软件优先**官方渠道**，下面也给了国内加速下载。
+> 文末注册链接为**邀请链接**。软件请以**官网 / 官方 Release**为准。
+
+## 模式：规则 vs 全局
+
+| 模式 | 行为 | 适合 |
+|------|------|------|
+| **规则模式** | **国外网站**走代理，**国内**（淘宝、B站等）直连 | **日常推荐**，省流量、国内快 |
+| **全局模式** | **所有流量**都走代理（含国内） | 排查问题、个别站规则未覆盖 |
+| **直连** | 全部不走代理 | 关闭代理时 |
+
+一句话：**平时用规则；个别网站打不开再临时切全局，完了改回规则。**
 
 ## 1. Clash Verge（Windows / Mac）
 
-1. 下载安装（见文末）→ 打开软件  
-2. **订阅** → 粘贴机场的 Clash 订阅 URL → 导入并选中  
-3. 打开 **系统代理**；需要全局时再开 TUN / 全局模式  
-4. 节点列表可**测延迟**，选低延迟、稳定线路  
+1. 下载安装 → 打开  
+2. **订阅** → 粘贴机场订阅 URL → 导入并**选中**  
+3. 打开 **系统代理**，模式选 **规则**  
+4. 节点列表可测延迟，选稳定线路  
 
-**建议**：日常用**规则模式**（国内直连、国外走代理）。
+**手机（Clash 系）**
 
-## 2. Sing-box（手机 / 电脑）
-
-1. 按系统装对应客户端（文末）  
-2. 导入服务商给的 **sing-box / 通用订阅**  
-3. 启动连接；异常时再试「全局」  
-
-| 场景 | 建议 |
+| 系统 | 说明 |
 |------|------|
-| 电脑 | Clash Verge 足够 |
-| 手机 Android | SFA（sing-box）或 Clash 类 |
-| iOS | App Store 搜可用客户端 |
+| Android | 可用 Clash Meta 类 / FlClash 等，导入**同一订阅** |
+| iOS | App Store 搜 Clash / 通用代理类客户端（部分需外区账号） |
+
+逻辑与电脑相同：导入订阅 → 开启连接 → 规则/全局。
+
+## 2. Sing-box（多端）
+
+1. 装对应客户端（下表）  
+2. 导入 **sing-box / 通用订阅**  
+3. 启动；异常时再试全局  
+
+| 端 | 客户端 |
+|----|--------|
+| Windows | SFI / GUI 版 |
+| Android | **SFA** |
+| iOS / macOS | App Store / SFM |
 
 ## 3. 节点网站（邀请链接）
 
@@ -39,27 +56,26 @@ categories: [工具]
 | A | [注册链接](https://888by.baoyundl.com/#/register?code=ydXpOEJ1) |
 | B | [注册链接](https://mitce.io/aff.php?aff=32697) |
 
-先**月付试用**，稳定再考虑长期。注册后按站内说明复制 **订阅链接** 即可。
+先月付试用；站内复制**订阅链接**导入客户端即可。
 
 ## 4. 下载地址
 
-**说明**：GitHub 在国内常打不开。  
-**第一次安装**可用「国内加速」；**以后升级版本请用官网 / GitHub 官方 Release**（挂上代理即可打开），更安全。
+**说明**：GitHub 国内常打不开。「加速」用于**第一次安装**；**以后更新请用官网 / 官方 Releases**（有节点后即可打开）。
 
-| 软件 | 国内加速（首装） | 官方（更新用） |
-|------|------------------|----------------|
-| Clash Verge | [加速下载](https://ghfast.top/https://github.com/clash-verge-rev/clash-verge-rev/releases) | [GitHub Releases](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
-| Sing-box | [加速下载](https://ghfast.top/https://github.com/SagerNet/sing-box/releases) | [官网](https://sing-box.sagernet.org/) · [GitHub](https://github.com/SagerNet/sing-box/releases) |
-| Android · SFA | 在应用内/商店搜索 sing-box | 同左 |
-| iOS | App Store 搜索 sing-box 等 | App Store |
+| 软件 | 国内加速（首装） | 官方（更新） |
+|------|------------------|--------------|
+| Clash Verge | [加速 → 最新版](https://ghfast.top/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) | [GitHub](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
+| Sing-box | [加速 → 最新版](https://ghfast.top/https://github.com/SagerNet/sing-box/releases/latest) | [官网](https://sing-box.sagernet.org/) · [GitHub](https://github.com/SagerNet/sing-box/releases) |
 
-加速站只用于**首次下载**；有节点之后，更新软件请回到 **官网 / 官方 Release** 获取最新版。
+加速链接若显示异常，在加速站首页粘贴上方 **GitHub 官方地址** 再打开。
 
-## 5. 简单排错
+**更新提醒**：能翻出去之后，卸载/覆盖安装请用**官网最新版**，不要长期使用来历不明的「绿色版」。
 
-- 打不开网页 → 系统代理是否开、订阅是否过期、当前配置是否选中  
-- 速度慢 → 测延迟换节点（日 / 新 / 港）  
-- 部分网站失败 → 规则 / 全局切换试一下  
+## 5. 排错
+
+- 打不开网站 → 代理是否开、订阅是否过期、配置是否选中  
+- 慢 → 换节点、测延迟  
+- 还不行 → 规则 ↔ 全局切换试试  
 
 ---
 
