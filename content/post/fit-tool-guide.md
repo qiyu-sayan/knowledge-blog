@@ -1,5 +1,5 @@
 ---
-title: "使用教程"
+title: "运动轨迹模拟工具"
 slug: fit-tool-guide
 date: 2026-10-13
 description: "Fit Tool 运动轨迹模拟工具的使用说明：画轨迹、调参数、生成 FIT 文件。"
