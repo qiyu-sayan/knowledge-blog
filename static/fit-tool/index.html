@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fit Tool v1.2 — 运动轨迹模拟</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- 天地图密钥弹窗 -->
+    <div id="keyModal" class="key-modal">
+      <div class="key-modal-card">
+        <h2>登录并设置天地图密钥</h2>
+        <p class="key-tip">
+          本工具需要<strong>你自己的天地图开发者密钥（tk）</strong>来加载地图。
+          密钥只保存在你的浏览器里，不会上传到服务器。
+        </p>
+        <form id="keyForm">
+          <label class="key-label" for="userNameInput">昵称（可选，仅本地记住）</label>
+          <input id="userNameInput" type="text" placeholder="例如：阿牧" autocomplete="nickname" />
+
+          <label class="key-label" for="keyInput">天地图密钥（tk）</label>
+          <input id="keyInput" type="text" placeholder="32 位十六进制，如 9fe5d147…" autocomplete="off" required />
+
+          <label class="key-remember">
+            <input id="rememberCheck" type="checkbox" checked />
+            记住我，下次免登录直接进入
+          </label>
+
+          <div class="key-actions">
+            <button id="keySubmitBtn" type="submit" class="key-btn primary">校验并进入</button>
+            <button id="keySkipBtn" type="button" class="key-btn">跳过校验直接进入</button>
+          </div>
+          <div id="keyStatus" class="key-status"></div>
+        </form>
+        <details class="key-help">
+          <summary>没有密钥？点此查看获取教程</summary>
+          <ol>
+            <li>打开 <a href="https://console.tianditu.gov.cn/" target="_blank" rel="noopener">天地图控制台</a> 注册并登录</li>
+            <li>进入「应用管理」→「创建新应用」</li>
+            <li>类型选<strong>浏览器端</strong>，提交后得到一串 32 位密钥（tk）</li>
+            <li>把密钥粘贴到上方输入框，点「校验并进入」</li>
+          </ol>
+          <p>提示：请勿把密钥发给他人；本页面不会把密钥上传到本站服务器。</p>
+        </details>
+      </div>
+    </div>
+
+    <div id="app">
+      <div class="sidebar">
+        <h1>Fit Tool v1.2</h1>
+        <div class="key-toolbar">
+          <button id="changeKeyBtn" type="button" class="mini-btn">更换密钥</button>
+          <button id="logoutBtn" type="button" class="mini-btn">退出登录</button>
+        </div>
+        <div class="form-group">
+          <label for="hrRest">静息心率</label>
+          <input id="hrRest" type="number" min="30" max="120" value="60" />
+        </div>
+        <div class="form-group">
+          <label for="hrMax">最大心率</label>
+          <input id="hrMax" type="number" min="100" max="220" value="180" />
+        </div>
+        <div class="form-group">
+          <label for="weightInput">体重（kg）</label>
+          <input id="weightInput" type="number" min="30" max="150" step="1" value="65" />
+        </div>
+        <div class="form-group">
+          <label for="lapCount">圈数（重复次数）</label>
+          <input id="lapCount" type="number" min="1" value="1" />
+        </div>
+        <div class="form-group">
+          <label for="exportCount">导出份数</label>
+          <input id="exportCount" type="number" min="1" max="10" value="1" />
+        </div>
+        <div id="exportTimes" class="export-times"></div>
+        <div id="distanceInfo" class="distance-info"></div>
+        <div class="form-group buttons">
+          <button id="getLocationBtn" type="button">尝试获取当前位置</button>
+          <button id="clearRoute" type="button">清除轨迹</button>
+          <button id="previewBtn" type="button">预览曲线</button>
+          <button id="generateFit" type="button">生成 FIT 文件</button>
+        </div>
+        <div id="message" class="message"></div>
+        <div class="preview-panel">
+          <div class="preview-chart">
+            <h2>配速预览（min/km）</h2>
+            <canvas id="paceChart"></canvas>
+          </div>
+          <div class="preview-chart">
+            <h2>心率预览（bpm）</h2>
+            <canvas id="hrChart"></canvas>
+          </div>
+        </div>
+        <div id="liveInfo" class="live-info"></div>
+        <p class="tip">在右侧地图上点击绘制轨迹点，系统会自动连成路线。定位不准时，请直接点地图。</p>
+      </div>
+      <div id="map"></div>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Garmin FIT SDK（本地托管，浏览器端生成 .fit） -->
+    <script type="module">
+      import { Encoder, Profile } from "./vendor/fitsdk.js";
+      window.GarminFitSdk = { Encoder, Profile };
+      window.dispatchEvent(new Event("fitsdk-ready"));
+    </script>
+    <script src="./fit-engine.js"></script>
+    <script src="./key-manager.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
