@@ -393,16 +393,7 @@ document.getElementById("previewBtn").addEventListener("click", () => {
 updateDistanceInfo();
 rebuildExportTimes();
 
-// 登录通过后加载地图
+// 直接加载地图（无登录门）
 document.addEventListener("DOMContentLoaded", () => {
-  const bootMap = () => applyTtdKey(TTD_KEY);
-  if (document.body.classList.contains("app-unlocked")) {
-    bootMap();
-  } else {
-    window.addEventListener("fit-auth-ready", bootMap, { once: true });
-    // 若登录门在本脚本后才绑 DOMContentLoaded，兜底再听一次
-    setTimeout(() => {
-      if (document.body.classList.contains("app-unlocked") && !vecLayer) bootMap();
-    }, 800);
-  }
+  applyTtdKey(TTD_KEY);
 });

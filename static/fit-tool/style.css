@@ -313,3 +313,14 @@ button:active {
   cursor: pointer;
 }
 .mini-btn:hover { background: #e2e8f0; }
+
+
+/* Leaflet 需要明确高度 */
+#map {
+  flex: 1;
+  min-height: 280px;
+  height: 100%;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
