@@ -68,16 +68,23 @@ Clash / Sing-box 官方只发在 **GitHub**，国内直连常失败。常用办�
 2. **节点网站自带下载**：很多机场官网有 **「客户端下载」** 页，直接下更省事（注册后看导航）  
 3. **有代理之后**：打开官网 / GitHub Release **更新到最新版**（更安全）
 
-### 4.2 软件下载
+### 4.2 软件下载（含手机版）
 
-| 软件 | 国内加速（选一个能开的） | 官方（更新用） |
-|------|--------------------------|----------------|
-| Clash Verge | [ghfast](https://ghfast.top/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) · [ghproxy.net](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) | [GitHub](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
-| Sing-box | [ghfast](https://ghfast.top/https://github.com/SagerNet/sing-box/releases/latest) · [ghproxy.net](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/latest) | [官网](https://sing-box.sagernet.org/) |
+当前测试：**ghproxy.net 可用**，ghfast 可能打不开。
 
-- 若某个加速页空白 / Invalid input：换另一个加速域名，或到**节点网站的客户端下载区**  
-- 手机 Android 也可在应用市场搜索 **Clash / sing-box** 相关客户端  
-- **更新**请用官网 / 官方 Release，勿长期使用来历不明的安装包
+| 软件 | 端 | 国内加速（ghproxy 优先） | 官方 |
+|------|----|--------------------------|------|
+| Clash Verge | 电脑 | [ghproxy](https://ghproxy.net/https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) | [GitHub](https://github.com/clash-verge-rev/clash-verge-rev/releases) |
+| FlClash（Clash 系） | **Android** | [ghproxy](https://ghproxy.net/https://github.com/chen08209/FlClash/releases/latest) | [GitHub](https://github.com/chen08209/FlClash/releases) |
+| Clash Meta for Android | **Android** | [ghproxy](https://ghproxy.net/https://github.com/MetaCubeX/ClashMetaForAndroid/releases/latest) | [GitHub](https://github.com/MetaCubeX/ClashMetaForAndroid/releases) |
+| Sing-box | 电脑 | [ghproxy](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/latest) | [官网](https://sing-box.sagernet.org/) |
+| SFA（sing-box） | **Android** | [ghproxy](https://ghproxy.net/https://github.com/SagerNet/sing-box/releases/latest) | [GitHub](https://github.com/SagerNet/sing-box) |
+| sing-box 等 | **iOS** | 无法 sideload 直链 | **App Store** 搜索 `sing-box` / 代理类客户端（部分需外区账号） |
+
+- **电脑**：Clash Verge 或 Sing-box GUI  
+- **手机 Android**：FlClash、Clash Meta、SFA 任选其一，导入**同一订阅**即可  
+- **iOS**：以 App Store 为准，没有「加速 apk」这种直链  
+- **更新**仍建议：有代理后用官网 / 官方 Release
 
 ## 5. 排错
 
