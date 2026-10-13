@@ -338,3 +338,60 @@ button:active {
 .loc-confirm-text { margin-bottom: 8px; color: #9a3412; line-height: 1.5; }
 .loc-confirm-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .loc-confirm .mini-btn { font-size: 12px; padding: 6px 10px; }
+
+/* 地点搜索 */
+.place-search-row {
+  display: flex;
+  gap: 6px;
+}
+.place-search-row input {
+  flex: 1;
+  min-width: 0;
+}
+.place-search-row .mini-btn {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+.place-results {
+  margin-top: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.place-results:empty { display: none; }
+.place-item {
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.place-item:hover {
+  background: #eef2ff;
+  border-color: #6366f1;
+}
+.place-item .place-name {
+  font-weight: 600;
+  color: #111827;
+  display: block;
+}
+.place-item .place-addr {
+  color: #6b7280;
+}
+.place-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+.place-status {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #2563eb;
+}

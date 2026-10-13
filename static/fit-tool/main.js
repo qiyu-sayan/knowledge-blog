@@ -236,6 +236,110 @@ function startLocate() {
   }, 8000);
 }
 
+// ========== 地点搜索（不依赖 GPS 的推荐定位方式） ==========
+function renderPlaceResults(items) {
+  const box = document.getElementById("placeResults");
+  if (!box) return;
+  box.innerHTML = "";
+  if (!items || items.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "place-hint";
+    empty.textContent = "没找到地点，换个关键词试试（如：XX大学）";
+    box.appendChild(empty);
+    return;
+  }
+  items.forEach((it) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "place-item";
+    const name = it.name || "未知地点";
+    const addr = it.address || it.province || "";
+    btn.innerHTML = `<span class="place-name"></span><span class="place-addr"></span>`;
+    btn.querySelector(".place-name").textContent = name;
+    btn.querySelector(".place-addr").textContent = addr;
+    btn.addEventListener("click", () => {
+      const lat = Number(it.lat ?? it.pointY);
+      const lng = Number(it.lon ?? it.pointX);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      placeLocationMarker(lat, lng, 20, name, true);
+      updateMessage(`已跳转到「${name}」，可在附近点击绘制轨迹。`);
+      box.innerHTML = "";
+      const q = document.getElementById("placeQuery");
+      if (q) q.value = name;
+    });
+    box.appendChild(btn);
+  });
+}
+
+async function searchPlaces() {
+  const input = document.getElementById("placeQuery");
+  const q = (input?.value || "").trim();
+  if (!q) {
+    updateMessage("请先输入要搜索的地点名，例如：XX大学", true);
+    return;
+  }
+  updateMessage(`正在搜索「${q}」…`);
+  try {
+    const postStr = encodeURIComponent(
+      JSON.stringify({
+        keyWord: q,
+        level: 12,
+        mapBound: "70,3,140,55",
+        queryType: 7,
+        count: 8,
+        start: 0
+      })
+    );
+    const url = `https://api.tianditu.gov.cn/v2/search?postStr=${postStr}&type=query&tk=${TTD_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const pois = data?.pois || [];
+    const parsed = pois.map((p) => {
+      const xy = (p.lonlat || "").split(",");
+      return {
+        name: p.name,
+        address: p.address || p.district || "",
+        lon: Number(xy[0]),
+        lat: Number(xy[1])
+      };
+    }).filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lon));
+
+    // 也支持单点地理编码（输入完整地址时）
+    if (parsed.length === 0) {
+      const gpost = encodeURIComponent(JSON.stringify({ keyWord: q, level: 12 }));
+      const gres = await fetch(
+        `https://api.tianditu.gov.cn/geocoder?postStr=${gpost}&type=geocode&tk=${TTD_KEY}`
+      );
+      const gdata = await gres.json();
+      const loc = gdata?.result?.location;
+      if (loc && Number.isFinite(loc.lat) && Number.isFinite(loc.lon)) {
+        parsed.push({
+          name: q,
+          address: gdata?.result?.formatted_address || "",
+          lon: loc.lon,
+          lat: loc.lat
+        });
+      }
+    }
+
+    renderPlaceResults(parsed);
+    if (parsed.length > 0) {
+      updateMessage(`找到 ${parsed.length} 个结果，点选即可跳转。`);
+    }
+  } catch (e) {
+    console.error(e);
+    updateMessage("搜索失败，请检查网络后重试", true);
+  }
+}
+
+document.getElementById("placeSearchBtn")?.addEventListener("click", searchPlaces);
+document.getElementById("placeQuery")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    searchPlaces();
+  }
+});
+// ========== 地点搜索 END ==========
 const getLocationBtn = document.getElementById("getLocationBtn");
 if (getLocationBtn) {
   getLocationBtn.addEventListener("click", startLocate);

@@ -33,6 +33,18 @@
         </div>
         <div id="exportTimes" class="export-times"></div>
         <div id="distanceInfo" class="distance-info"></div>
+
+        <!-- 地点搜索（推荐：不依赖 GPS） -->
+        <div class="form-group place-search">
+          <label for="placeQuery">搜索地点（推荐）</label>
+          <div class="place-search-row">
+            <input id="placeQuery" type="text" placeholder="如：XX大学 / XX体育场" autocomplete="off" />
+            <button id="placeSearchBtn" type="button" class="mini-btn">搜索</button>
+          </div>
+          <div id="placeResults" class="place-results"></div>
+          <p class="place-hint">定位不准时，直接搜学校/场馆名，点结果跳过去即可。</p>
+        </div>
+
         <div class="form-group buttons">
           <button id="getLocationBtn" type="button">尝试获取当前位置</button>
           <button id="clearRoute" type="button">清除轨迹</button>
