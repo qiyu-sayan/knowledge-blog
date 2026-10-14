@@ -32,10 +32,40 @@ categories: [工具]
 
 | 系统 | 说明 |
 |------|------|
-| Android | 可用 Clash Meta 类 / FlClash 等，导入**同一订阅** |
+| Android | **Clash Meta for Android** / FlClash 等，导入**同一订阅** |
 | iOS | App Store 搜 Clash / 通用代理类客户端（部分需外区账号） |
 
-逻辑与电脑相同：导入订阅 → 开启连接 → 规则/全局。
+### 手机图文教程（以 Clash Meta for Android 为例）
+
+**1. 打开 App，进入「配置」**（添加订阅）
+
+![步骤1：进入配置](/img/magic-tools/clash-android/step-1.jpg)
+
+**2. 点右上角「+」新建配置**
+
+![步骤2：新建配置](/img/magic-tools/clash-android/step-2.jpg)
+
+**3. 选择「URL」从订阅链接导入**
+
+![步骤3：选择 URL](/img/magic-tools/clash-android/step-3.jpg)
+
+**4. 填写配置**：名称随意；URL 粘贴机场**订阅链接**；自动更新建议 **1440 分钟**（1 天）→ 保存
+
+![步骤4：填写名称与订阅URL](/img/magic-tools/clash-android/step-4.jpg)
+
+**5. 回到主页，点启动**。默认多为**规则模式**；改模式、选节点见下一步
+
+![步骤5：启动运行](/img/magic-tools/clash-android/step-5.jpg)
+
+**6. 进「代理」→ 右上角菜单**，可切换**规则 / 全局 / 直连**
+
+![步骤6：切换模式](/img/magic-tools/clash-android/step-6.jpg)
+
+**7. 全局模式下，点选节点**（如香港 / 新加坡）；日常更建议用**规则模式**
+
+![步骤7：选择节点](/img/magic-tools/clash-android/step-7.jpg)
+
+电脑版步骤与手机一致：导入订阅 → 选配置 → 系统代理 → 规则/全局。
 
 ## 2. Sing-box（多端）
 
