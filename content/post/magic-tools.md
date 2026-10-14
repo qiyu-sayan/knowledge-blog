@@ -23,7 +23,7 @@ categories: [工具]
 
 ## 1. Clash Verge（Windows / Mac） / Clash Meta（手机）
 
-图文步骤见专页：**[Clash 使用教程（电脑 + 手机）](/p/clash-tutorial/)**
+**图文教程网页**：[Clash 使用教程（电脑 + 手机）→](/clash-guide/)
 
 1. 下载安装客户端（见文末下载表）  
 2. **订阅** → 粘贴机场订阅 URL → **选中**配置  
