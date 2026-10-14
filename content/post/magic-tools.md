@@ -21,67 +21,16 @@ categories: [工具]
 
 一句话：**平时用规则；个别网站打不开再临时切全局，完了改回规则。**
 
-## 1. Clash Verge（Windows / Mac）
+## 1. Clash Verge（Windows / Mac） / Clash Meta（手机）
 
-### 电脑图文教程（Clash Verge）
+图文步骤见专页：**[Clash 使用教程（电脑 + 手机）](/p/clash-tutorial/)**
 
-**1. 打开「订阅」→ 粘贴订阅链接 →「新建」**；并**点选中**要使用的配置
+1. 下载安装客户端（见文末下载表）  
+2. **订阅** → 粘贴机场订阅 URL → **选中**配置  
+3. 打开 **系统代理 / 启动**，模式选 **规则**  
+4. 需要时在代理列表里切换节点  
 
-![电脑步骤1：订阅](/img/magic-tools/clash-pc/step-1.jpg)
-
-**2. 新建配置**：填**备注名**、**订阅链接**；**更新间隔**建议 `1440` 分钟；其余默认 → **保存**
-
-![电脑步骤2：新建配置](/img/magic-tools/clash-pc/step-2.jpg)
-
-**3. 回到「首页」**：打开 **系统代理**；代理模式选 **规则 / 全局 / 直连**（直连≈不走代理）；右上可切换**节点**
-
-![电脑步骤3：系统代理与模式](/img/magic-tools/clash-pc/step-3.jpg)
-
-### 电脑文字步骤（简表）
-
-1. 下载安装 → 打开  
-2. **订阅** → 粘贴机场订阅 URL → 导入并**选中**  
-3. 打开 **系统代理**，模式选 **规则**  
-4. 节点列表可测延迟，选稳定线路  
-
-**手机（Clash 系）**
-
-| 系统 | 说明 |
-|------|------|
-| Android | **Clash Meta for Android** / FlClash 等，导入**同一订阅** |
-| iOS | App Store 搜 Clash / 通用代理类客户端（部分需外区账号） |
-
-### 手机图文教程（以 Clash Meta for Android 为例）
-
-**1. 打开 App，进入「配置」**（添加订阅）
-
-![步骤1：进入配置](/img/magic-tools/clash-android/step-1.jpg)
-
-**2. 点右上角「+」新建配置**
-
-![步骤2：新建配置](/img/magic-tools/clash-android/step-2.jpg)
-
-**3. 选择「URL」从订阅链接导入**
-
-![步骤3：选择 URL](/img/magic-tools/clash-android/step-3.jpg)
-
-**4. 填写配置**：名称随意；URL 粘贴机场**订阅链接**；自动更新建议 **1440 分钟**（1 天）→ 保存
-
-![步骤4：填写名称与订阅URL](/img/magic-tools/clash-android/step-4.jpg)
-
-**5. 回到主页，点启动**。默认多为**规则模式**；改模式、选节点见下一步
-
-![步骤5：启动运行](/img/magic-tools/clash-android/step-5.jpg)
-
-**6. 进「代理」→ 右上角菜单**，可切换**规则 / 全局 / 直连**
-
-![步骤6：切换模式](/img/magic-tools/clash-android/step-6.jpg)
-
-**7. 全局模式下，点选节点**（如香港 / 新加坡）；日常更建议用**规则模式**
-
-![步骤7：选择节点](/img/magic-tools/clash-android/step-7.jpg)
-
-电脑版步骤与手机一致：导入订阅 → 选配置 → 系统代理 → 规则/全局。
+**手机（Clash 系）**：Clash Meta for Android、FlClash 等，导入**同一订阅**即可；iOS 在 App Store 搜索相关客户端。
 
 ## 2. Sing-box（多端）
 
