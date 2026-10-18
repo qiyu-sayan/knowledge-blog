@@ -1,7 +1,7 @@
 ---
 title: "随机地址生成器"
 slug: address-generator
-date: 2026-10-14
+date: 2026-10-19
 description: "真实城市街道 / 公开地标地址生成，用于测试表单与地图定位演示。"
 tags: [工具, 测试, 生成器]
 categories: [工具]
