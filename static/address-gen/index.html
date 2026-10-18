@@ -57,12 +57,20 @@
       margin: 1.15rem 0;
       align-items: center;
     }
-    .toolbar input[type="number"] {
-      width: 100px;
+    .toolbar input[type="number"],
+    .toolbar select {
       padding: 10px 12px;
       border: 1px solid var(--line);
       border-radius: 10px;
       font-size: 15px;
+    }
+    .toolbar input[type="number"] { width: 100px; }
+    .toolbar label.chk {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--ink);
     }
     .card {
       background: var(--card);
@@ -124,7 +132,7 @@
     <div class="wrap">
       <div>
         <h1>随机地址生成器</h1>
-        <div class="lead">虚拟城市 · 多街区多门牌 · 测试 / 演示用</div>
+        <div class="lead">真实街道 / 公开地标 · 供测试与演示</div>
       </div>
       <a class="btn btn-ghost" href="/p/address-generator/" style="text-decoration:none">使用说明</a>
     </div>
@@ -138,8 +146,14 @@
     </div>
 
     <div class="toolbar">
-      <label class="lead">条数（最多 200）</label>
-      <input id="count" type="number" min="1" max="200" value="12" />
+      <label class="lead">模式</label>
+      <select id="mode">
+        <option value="street">真实街道（城市+真实路名+门牌）</option>
+        <option value="landmark">公开地标（大学/市政厅等）</option>
+      </select>
+      <label class="lead">条数</label>
+      <input id="count" type="number" min="1" max="50" value="8" />
+      <label class="chk"><input id="withName" type="checkbox" /> 附加随机人名（可选）</label>
       <button class="btn" id="genBtn">生成</button>
       <button class="btn btn-ghost" id="copyAll">复制全部</button>
       <button class="btn btn-ghost" id="clearBtn">清空</button>
@@ -149,153 +163,91 @@
     <div id="list"></div>
 
     <p class="note">
-      数据为<strong>程序虚构拼装</strong>（扩大姓氏 / 街道 / 城市池），不是真实户主档案。仅供开发测试与演示。
+      <strong>真实街道</strong>模式：城市、路名取自真实地名，门牌号在该路上随机，地图上通常能找到道路；不保证每一门牌都精确对应某一户。<br />
+      <strong>公开地标</strong>模式：使用公开的学校、市政厅、图书馆等地址。<br />
+      不提供真实住户姓名与私人住址绑定数据。仅供测试演示。
     </p>
   </div>
 
   <script>
-    /* 大规模虚构库：同一城市下大量街道 × 门牌，避免「只有几条街」的塑料感 */
-    const DATA = {
+    /* 真实城市 + 真实路名（常见市政道路），门牌在道路上随机 */
+    const STREETS = {
       us: {
-        first: [
-          "James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","William","Elizabeth",
-          "David","Barbara","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen",
-          "Daniel","Nancy","Matthew","Lisa","Anthony","Betty","Mark","Margaret","Donald","Sandra",
-          "Steven","Ashley","Andrew","Kimberly","Kenneth","Emily","Joshua","Donna","Kevin","Michelle",
-          "Brian","Carol","George","Amanda","Timothy","Melissa","Ronald","Deborah","Jason","Stephanie",
-          "Edward","Rebecca","Jeffrey","Sharon","Ryan","Laura","Jacob","Cynthia","Gary","Kathleen",
-          "Nicholas","Amy","Eric","Angela","Jonathan","Shirley","Stephen","Anna","Larry","Ruth",
-          "Justin","Brenda","Scott","Pamela","Brandon","Nicole","Benjamin","Katherine","Samuel","Samantha",
-          "Gregory","Christine","Alexander","Emma","Patrick","Catherine","Frank","Rachel","Raymond","Janet",
-          "Jack","Maria","Dennis","Diane","Jerry","Carolyn","Tyler","Vanessa","Aaron","Julie"
-        ],
-        last: [
-          "Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez",
-          "Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin",
-          "Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson",
-          "Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores",
-          "Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts",
-          "Gomez","Phillips","Evans","Turner","Diaz","Parker","Cruz","Edwards","Collins","Reyes",
-          "Stewart","Morris","Morales","Murphy","Cook","Rogers","Gutierrez","Ortiz","Morgan","Cooper",
-          "Peterson","Bailey","Reed","Kelly","Howard","Ramos","Kim","Cox","Ward","Richardson",
-          "Watson","Brooks","Chavez","Wood","James","Bennett","Gray","Mendoza","Ruiz","Hughes",
-          "Price","Alvarez","Castillo","Sanders","Patel","Myers","Long","Ross","Foster","Jimenez"
-        ],
-        streetWords: [
-          "Oak","Maple","Cedar","Pine","Elm","Willow","Birch","Walnut","Chestnut","Poplar",
-          "Washington","Jefferson","Lincoln","Madison","Monroe","Adams","Franklin","Jackson","Harrison","Wilson",
-          "Lake","Hill","Park","Sunset","Sunrise","Riverside","Brookside","Highland","Meadow","Prairie",
-          "North","South","East","West","Cherry","Apple","Peach","Plum","Magnolia","Dogwood",
-          "Spring","Summer","Autumn","Winter","Garden","Orchard","Vine","Creek","Valley","Ridge",
-          "College","University","School","Church","Market","Mill","Bridge","Station","Harbor","Bay",
-          "Parkview","Lakewood","Hillcrest","Fairview","Pleasant","Prospect","Summit","Canyon","Copper","Silver",
-          "Golden","Iron","Stone","Brick","Lumber","Cotton","Wheat","Corn","Maplewood","Pinecrest",
-          "Aspen","Cypress","Juniper","Laurel","Olive","Sycamore","Redwood","Sequoia","Tamarack","Catalpa",
-          "Franklin","Liberty","Freedom","Patriot","Union","Constitution","Independence","Memorial","Veterans","Peace"
-        ],
-        streetType: ["St","Ave","Blvd","Dr","Ln","Rd","Ct","Pl","Way","Ter","Cir","Hwy","Pkwy"],
         cities: [
-          ["New York","NY","10001"],["Los Angeles","CA","90001"],["Chicago","IL","60601"],
-          ["Houston","TX","77001"],["Phoenix","AZ","85001"],["Philadelphia","PA","19101"],
-          ["San Antonio","TX","78201"],["San Diego","CA","92101"],["Dallas","TX","75201"],
-          ["Austin","TX","73301"],["Seattle","WA","98101"],["Denver","CO","80201"],
-          ["Boston","MA","02101"],["Atlanta","GA","30301"],["Miami","FL","33101"],
-          ["Portland","OR","97201"],["Nashville","TN","37201"],["Las Vegas","NV","89101"],
-          ["Minneapolis","MN","55401"],["Charlotte","NC","28201"],["Salt Lake City","UT","84101"],
-          ["Kansas City","MO","64101"],["Columbus","OH","43201"],["Indianapolis","IN","46201"],
-          ["San Francisco","CA","94101"],["Detroit","MI","48201"],["Memphis","TN","38101"],
-          ["Baltimore","MD","21201"],["Milwaukee","WI","53201"],["Albuquerque","NM","87101"]
+          { city: "New York", state: "NY", zip: "10001", streets: ["Broadway","5th Avenue","Madison Avenue","Park Avenue","Lexington Avenue","6th Avenue","7th Avenue","8th Avenue","Amsterdam Avenue","Columbus Avenue","West 34th Street","East 42nd Street","Canal Street","Houston Street","Bleecker Street","Wall Street","Fulton Street","Atlantic Avenue","Queens Boulevard","Northern Boulevard"] },
+          { city: "Los Angeles", state: "CA", zip: "90001", streets: ["Sunset Boulevard","Wilshire Boulevard","Santa Monica Boulevard","Hollywood Boulevard","Melrose Avenue","Rodeo Drive","Ventura Boulevard","Sepulveda Boulevard","Western Avenue","Figueroa Street","Grand Avenue","Olympic Boulevard","Venice Boulevard","La Brea Avenue","Fairfax Avenue"] },
+          { city: "Chicago", state: "IL", zip: "60601", streets: ["Michigan Avenue","State Street","Wabash Avenue","Lake Shore Drive","Halsted Street","Western Avenue","Ashland Avenue","Fullerton Avenue","Archer Avenue","Madison Street","Jackson Boulevard","Roosevelt Road","Chicago Avenue","Division Street","Belmont Avenue"] },
+          { city: "Houston", state: "TX", zip: "77001", streets: ["Main Street","Westheimer Road","Bissonnet Street","Richmond Avenue","Memorial Drive","Heights Boulevard","Shepherd Drive","Kirby Drive","Montrose Boulevard","Allen Parkway","Smith Street","Fannin Street","San Jacinto Street","Polk Street","Congress Street"] },
+          { city: "San Francisco", state: "CA", zip: "94101", streets: ["Market Street","Mission Street","Van Ness Avenue","Fillmore Street","Divisadero Street","Geary Boulevard","California Street","Sacramento Street","Clement Street","Irving Street","Valencia Street","Castro Street","Haight Street","Folsom Street","Howard Street"] },
+          { city: "Boston", state: "MA", zip: "02101", streets: ["Beacon Street","Commonwealth Avenue","Boylston Street","Newbury Street","Huntington Avenue","Washington Street","Tremont Street","Atlantic Avenue","Massachusetts Avenue","Cambridge Street","Summer Street","Winter Street","Marlborough Street","Hanover Street","Salem Street"] },
+          { city: "Seattle", state: "WA", zip: "98101", streets: ["Pike Street","Pine Street","Olive Way","Denny Way","Broadway","East Union Street","Madison Street","Mercer Street","Rainier Avenue","Aurora Avenue","Lake City Way","University Way","Market Street","Ballard Avenue"] },
+          { city: "Miami", state: "FL", zip: "33101", streets: ["Biscayne Boulevard","Brickell Avenue","Collins Avenue","Ocean Drive","Washington Avenue","Alton Road","Flagler Street","Coral Way","Bird Road","Calle Ocho","Miracle Mile"] }
         ],
-        company: [
-          "Acme Corp","Globex LLC","Initech","Stark Industries","Wayne Enterprises","Hooli","Pied Piper",
-          "Soylent Inc","Vandelay Industries","Umbrella Group","Northwind Traders","Contoso Ltd",
-          "Aperture Science","Black Mesa","Cyberdyne Systems","Oscorp","LexCorp","Daily Planet"
-        ],
-        emailDomain: ["gmail.com","yahoo.com","outlook.com","icloud.com","proton.me","aol.com","hotmail.com"]
+        first: ["James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","David","Elizabeth","William","Barbara","Richard","Susan","Joseph","Jessica"],
+        last: ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Martinez","Wilson","Anderson","Taylor","Thomas","Moore","Jackson","Martin"],
+        emailDomain: ["gmail.com","yahoo.com","outlook.com","icloud.com"]
       },
       uk: {
-        first: [
-          "Oliver","Olivia","George","Amelia","Harry","Isla","Jack","Ava","Jacob","Emily",
-          "Noah","Sophia","Charlie","Grace","Thomas","Mia","Oscar","Poppy","William","Isabelle",
-          "James","Lily","Leo","Freya","Alfie","Sophie","Henry","Isabella","Joshua","Ruby",
-          "Daniel","Chloe","Samuel","Evie","Alexander","Ella","Joseph","Florence","David","Evie",
-          "Edward","Millie","Lucas","Phoebe","Matthew","Hannah","Ethan","Lucy","Dylan","Georgia",
-          "Finley","Holly","Harvey","Lydia","Max","Abigail","Sebastian","Eleanor","Adam","Martha",
-          "Andrew","Rebecca","Benjamin","Megan","Callum","Amber","Connor","Anna","Edward","Charlotte"
-        ],
-        last: [
-          "Smith","Jones","Williams","Taylor","Brown","Davies","Wilson","Evans","Thomas","Roberts",
-          "Johnson","Lewis","Walker","Robinson","Wood","Thompson","White","Watson","Jackson","Wright",
-          "Green","Harris","Cooper","King","Lee","Martin","Clarke","James","Morgan","Hughes",
-          "Edwards","Hill","Moore","Clark","Harrison","Scott","Young","Morris","Hall","Ward",
-          "Turner","Carter","Phillips","Mitchell","Patel","Adams","Campbell","Anderson","Allen","Cook",
-          "Bailey","Parker","Miller","Davis","Murphy","Price","Bell","Baker","Griffiths","Kelly",
-          "Chapman","Marshall","Webster","Simpson","Perry","Barnes","Foster","Bennett","Chapman","Reid"
-        ],
-        streetWords: [
-          "High","Station","Church","London","Victoria","Park","Green","King","Queen","Mill",
-          "Bridge","Churchill","Wellington","Cromwell","Albion","Beacon","Crown","Manor","Orchard","Rose",
-          "Albert","Alexandra","Charles","Edward","George","Henry","Mary","John","William","Elizabeth",
-          "Springfield","Riverside","Hilltop","Fairview","Pleasant","Broadway","Chester","Warwick","Norfolk","Kent",
-          "Oxford","Cambridge","Eton","Harrow","Richmond","Windsor","Carlisle","Durham","Lancaster","York",
-          "Beech","Ash","Elm","Willow","Hazel","Rowan","Cedar","Laurel","Ivy","Heather",
-          "Chapel","Abbey","Castle","Market","Town","Cross","Nelson","Trafalgar","Marlborough","Gladstone",
-          "Springfield","Station","Terrace","Gardens","Grove","Close","Crescent","Meadow","Fern","Willowbrook"
-        ],
-        streetType: ["Street","Road","Lane","Avenue","Close","Drive","Way","Place","Crescent","Gardens","Grove","Hill","Terrace","Walk"],
         cities: [
-          ["London","England","E1 6AN"],["Manchester","England","M1 1AE"],["Birmingham","England","B1 1BB"],
-          ["Leeds","England","LS1 1BA"],["Glasgow","Scotland","G1 1XQ"],["Edinburgh","Scotland","EH1 1YZ"],
-          ["Liverpool","England","L1 1JD"],["Bristol","England","BS1 1AA"],["Cardiff","Wales","CF10 1EP"],
-          ["Belfast","Northern Ireland","BT1 5GS"],["Sheffield","England","S1 1AA"],["Newcastle","England","NE1 1EE"],
-          ["Nottingham","England","NG1 1AA"],["Brighton","England","BN1 1AE"],["Cambridge","England","CB1 1BH"],
-          ["Oxford","England","OX1 1AA"],["York","England","YO1 7HH"],["Bath","England","BA1 1LZ"]
+          { city: "London", region: "England", zip: "SW1A 1AA", streets: ["Oxford Street","Regent Street","Piccadilly","The Strand","Fleet Street","Baker Street","Bond Street","Shaftesbury Avenue","Charing Cross Road","Whitehall","Parliament Street","Victoria Street","Kensington High Street","King's Road","Edgware Road","Bishopsgate","Threadneedle Street","Aldgate High Street","Borough High Street","Waterloo Road"] },
+          { city: "Manchester", region: "England", zip: "M1 1AE", streets: ["Deansgate","Oxford Road","Portland Street","Piccadilly Gardens","Market Street","King Street","Cross Street","London Road","Stockport Road","Wilmslow Road","Cheetham Hill Road","Great Ancoats Street"] },
+          { city: "Birmingham", region: "England", zip: "B1 1BB", streets: ["New Street","High Street","Colmore Row","Broad Street","Corporation Street","Bull Street","Steelhouse Lane","Soho Road","Stratford Road","Hagley Road","Bristol Road","Alcester Road"] },
+          { city: "Edinburgh", region: "Scotland", zip: "EH1 1YZ", streets: ["Princes Street","Royal Mile","George Street","Leith Walk","Lothian Road","Bruntsfield Place","Haymarket Terrace","Duke Street","Leith Street","Nicolson Street"] },
+          { city: "Glasgow", region: "Scotland", zip: "G1 1XQ", streets: ["Buchanan Street","Argyle Street","Sauchiehall Street","Renfield Street","Hope Street","Queen Street","Byres Road","Great Western Road","Duke Street","London Road"] }
         ],
-        company: [
-          "Acme Ltd","Britannia Co","Thames Digital","Crown Solutions","Baker & Co","Cedar Holdings",
-          "Anglia Systems","Northgate Traders","Regent Partners","Kingsley Group"
-        ],
-        emailDomain: ["gmail.com","outlook.com","btinternet.com","yahoo.co.uk","hotmail.co.uk"]
+        first: ["Oliver","Olivia","George","Amelia","Harry","Isla","Jack","Ava","Jacob","Emily","Noah","Sophia","Thomas","Mia","William","Grace"],
+        last: ["Smith","Jones","Williams","Taylor","Brown","Davies","Wilson","Evans","Thomas","Roberts","Johnson","Lewis","Walker","Robinson","Wood","Thompson"],
+        emailDomain: ["gmail.com","outlook.com","btinternet.com","yahoo.co.uk"]
       },
       cn: {
-        last: [
-          "王","李","张","刘","陈","杨","黄","赵","周","吴","徐","孙","马","朱","胡","郭","何","高","林","罗",
-          "郑","梁","谢","宋","唐","许","韩","冯","邓","曹","彭","曾","肖","田","董","袁","潘","于","蒋","蔡",
-          "余","杜","叶","程","苏","魏","吕","丁","任","沈","姚","卢","姜","崔","钟","谭","陆","汪","范","金"
-        ],
-        first: [
-          "伟","芳","娜","敏","静","丽","强","磊","军","洋","勇","艳","杰","娟","涛","明","超","秀英","霞","平",
-          "刚","桂英","建华","文","华","国庆","志强","秀兰","丹","婷","浩","然","子轩","子涵","梓萱","诗涵",
-          "宇","航","雪","梅","鹏","飞","鑫","磊","婷婷","丹丹","俊","杰","琳","悦","欣","怡","博文","嘉怡",
-          "晓东","晓明","小燕","小龙","雅琴","建华","建军","春燕","晓红","志明","秀珍","玉兰","淑芬","金花"
-        ],
-        streets: [
-          "中山","解放","人民","建设","和平","文化","青年","站前","滨江","南山","东风","光明","团结","前进","幸福",
-          "长江","黄河","珠江","淮海","南京","北京","上海","天津","重庆","广州","深圳","杭州","苏州","无锡","常州",
-          "幸福里","建工","科苑","高新","创业","创新","软件","数码","航天","银河","光明","朝阳","向阳","红旗","工农",
-          "工业","农林","体育","音乐","美术","师范","大学","学院","科技","实验","示范","花园","湖滨","江滨","滨海",
-          "北环","南环","东环","西环","迎宾","兴华","裕华","振华","新华","兴安","裕安","朝阳路","人民南","解放北"
-        ],
-        streetType: ["路","街","大道","巷","里","弄"],
         cities: [
-          ["上海市","上海","200000","浦东新区"],["上海市","上海","200000","徐汇区"],["上海市","上海","200000","静安区"],
-          ["北京市","北京","100000","海淀区"],["北京市","北京","100000","朝阳区"],["北京市","北京","100000","西城区"],
-          ["广州市","广东","510000","天河区"],["广州市","广东","510000","越秀区"],
-          ["深圳市","广东","518000","南山区"],["深圳市","广东","518000","福田区"],
-          ["杭州市","浙江","310000","西湖区"],["杭州市","浙江","310000","滨江区"],
-          ["成都市","四川","610000","武侯区"],["成都市","四川","610000","锦江区"],
-          ["武汉市","湖北","430000","洪山区"],["武汉市","湖北","430000","江汉区"],
-          ["西安市","陕西","710000","雁塔区"],["西安市","陕西","710000","碑林区"],
-          ["南京市","江苏","210000","鼓楼区"],["南京市","江苏","210000","玄武区"],
-          ["重庆市","重庆","400000","渝中区"],["重庆市","重庆","400000","江北区"],
-          ["苏州市","江苏","215000","工业园区"],["青岛市","山东","266000","市南区"]
+          { city: "上海市", prov: "上海", zip: "200000", district: "黄浦区", streets: ["南京东路","南京西路","淮海中路","人民大道","延安东路","中山南一路","世纪大道","陆家嘴环路","河南中路","福州路","九江路","汉口路","广东路","北京东路","北京西路"] },
+          { city: "北京市", prov: "北京", zip: "100000", district: "东城区", streets: ["长安街","王府井大街","东单北大街","朝阳门内大街","东四北大街","安定门内大街","交道口南大街","美术馆东街","南锣鼓巷","五四大街","景山前街"] },
+          { city: "广州市", prov: "广东", zip: "510000", district: "越秀区", streets: ["中山五路","北京路","人民中路","解放南路","沿江西路","东风中路","广州大道","天河路","体育东路","环市东路"] },
+          { city: "深圳市", prov: "广东", zip: "518000", district: "福田区", streets: ["深南大道","红荔路","华富路","皇岗路","彩田路","福华路","滨河大道","香蜜湖路","人民南路","建设路"] },
+          { city: "杭州市", prov: "浙江", zip: "310000", district: "上城区", streets: ["延安路","解放路","庆春路","凤起路","文三路","文一路","保俶路","中山中路","湖滨路","杨公堤"] },
+          { city: "成都市", prov: "四川", zip: "610000", district: "青羊区", streets: ["人民中路","天府大道","红星路","春熙路","蜀都大道","滨江东路","科华北路","建设路","一环路","二环路"] },
+          { city: "武汉市", prov: "湖北", zip: "430000", district: "江汉区", streets: ["中山大道","江汉路","解放大道","建设大道","沿江大道","发展大道","珞喻路","中南路","武珞路"] },
+          { city: "西安市", prov: "陕西", zip: "710000", district: "碑林区", streets: ["长安中路","雁塔西路","小寨东路","东大街","西大街","南大街","北大街","友谊东路","太白南路"] }
         ],
-        company: [
-          "蓝天科技","远航信息","云帆网络","星辰工作室","启明数据","汇通软件","华信电子","卓越教育",
-          "安居地产","康泰医疗","智行出行","味道餐饮","悦读书店","风行体育"
-        ],
-        emailDomain: ["qq.com","163.com","126.com","gmail.com","outlook.com","foxmail.com"]
+        last: ["王","李","张","刘","陈","杨","黄","赵","周","吴","徐","孙","马","朱","胡","郭","何","高","林","罗"],
+        first: ["伟","芳","娜","敏","静","丽","强","磊","军","洋","勇","艳","杰","娟","涛","明"],
+        emailDomain: ["qq.com","163.com","126.com","gmail.com"]
       }
+    };
+
+    /* 公开地标 / 公共建筑地址（非私人住宅） */
+    const LANDMARKS = {
+      us: [
+        { name: "Boston City Hall", address: "1 City Hall Square", city: "Boston", state: "MA", zip: "02201" },
+        { name: "New York Public Library", address: "476 5th Ave", city: "New York", state: "NY", zip: "10018" },
+        { name: "San Francisco City Hall", address: "1 Dr Carlton B Goodlett Pl", city: "San Francisco", state: "CA", zip: "94102" },
+        { name: "Chicago City Hall", address: "121 N LaSalle St", city: "Chicago", state: "IL", zip: "60602" },
+        { name: "Los Angeles City Hall", address: "200 N Spring St", city: "Los Angeles", state: "CA", zip: "90012" },
+        { name: "University of Washington", address: "1410 NE Campus Pkwy", city: "Seattle", state: "WA", zip: "98195" },
+        { name: "Houston City Hall", address: "901 Bagby St", city: "Houston", state: "TX", zip: "77002" },
+        { name: "Miami-Dade County Building", address: "111 NW 1st St", city: "Miami", state: "FL", zip: "33128" }
+      ],
+      uk: [
+        { name: "City of London (Guildhall)", address: "Gresham Street", city: "London", region: "England", zip: "EC2V 7HH" },
+        { name: "British Library", address: "96 Euston Road", city: "London", region: "England", zip: "NW1 2DB" },
+        { name: "University of Oxford (Sheldonian)", address: "Broad Street", city: "Oxford", region: "England", zip: "OX1 3AZ" },
+        { name: "Manchester Town Hall", address: "Albert Square", city: "Manchester", region: "England", zip: "M2 5DB" },
+        { name: "Birmingham Museum & Art Gallery", address: "Chamberlain Square", city: "Birmingham", region: "England", zip: "B3 3DH" },
+        { name: "Edinburgh City Chambers", address: "High Street", city: "Edinburgh", region: "Scotland", zip: "EH1 1YJ" },
+        { name: "Glasgow City Chambers", address: "George Square", city: "Glasgow", region: "Scotland", zip: "G2 1DU" },
+        { name: "Cambridge University Library", address: "West Road", city: "Cambridge", region: "England", zip: "CB3 9DR" }
+      ],
+      cn: [
+        { name: "上海市人民政府", address: "人民大道200号", city: "上海市", prov: "上海", zip: "200000", district: "黄浦区" },
+        { name: "北京图书馆（国家图书馆）", address: "中关村南大街33号", city: "北京市", prov: "北京", zip: "100081", district: "海淀区" },
+        { name: "广州市人民政府", address: "府前路1号", city: "广州市", prov: "广东", zip: "510032", district: "越秀区" },
+        { name: "深圳市市民中心", address: "福中三路", city: "深圳市", prov: "广东", zip: "518000", district: "福田区" },
+        { name: "浙江大学玉泉校区", address: "浙大路38号", city: "杭州市", prov: "浙江", zip: "310027", district: "西湖区" },
+        { name: "成都市天府广场", address: "人民东路", city: "成都市", prov: "四川", zip: "610015", district: "青羊区" },
+        { name: "武汉大学", address: "八一路299号", city: "武汉市", prov: "湖北", zip: "430072", district: "武昌区" },
+        { name: "西安钟楼", address: "东大街", city: "西安市", prov: "陕西", zip: "710001", district: "碑林区" }
+      ]
     };
 
     let region = "us";
@@ -308,66 +260,85 @@
       return min + Math.floor(Math.random() * (max - min + 1));
     }
 
-    function generateOne() {
-      const d = DATA[region];
-      const first = pick(d.first);
-      const last = pick(d.last);
-      const city = pick(d.cities);
+    function formatOne(item, mode) {
+      const wantName = document.getElementById("withName").checked;
+      const d = STREETS[region];
+      let out = {};
+      if (mode === "landmark") {
+        out = {
+          名称: item.name,
+          地址: item.address,
+          城市: item.city
+        };
+        if (region === "uk") {
+          out["郡/地区"] = item.region;
+          out["邮编"] = item.zip;
+        } else if (region === "cn") {
+          out["区县"] = item.district;
+          out["邮编"] = item.zip;
+        } else {
+          out["州"] = item.state;
+          out["ZIP"] = item.zip;
+        }
+        if (wantName) {
+          out["示例姓名"] = region === "cn"
+            ? pick(d.last) + pick(d.first)
+            : `${pick(d.first)} ${pick(d.last)}`;
+        }
+        return out;
+      }
 
+      // street mode
+      const house = randInt(1, 3998);
+      const line = `${house} ${item.streets[0] === undefined ? pick(item.streets) : pick(item.streets)}`;
       if (region === "cn") {
-        const street = pick(d.streets) + pick(d.streetType);
-        const num = randInt(1, 2888);
-        const unit = randInt(1, 28);
-        const room = randInt(101, 3206);
-        return {
-          姓名: last + first,
-          手机: pick(["138","139","150","151","186","188","199","177"]) + String(randInt(10000000, 99999999)),
-          省市: city[0],
-          区县: city[3],
-          地址: `${street}${num}号 ${unit}幢 ${room}室`,
-          邮编: city[2],
-          邮箱: `${randInt(10000, 9999999)}@${pick(d.emailDomain)}`,
-          公司: pick(d.company)
+        out = {
+          地址: `${pick(item.streets)}${house}号`,
+          省市: item.city,
+          区县: item.district,
+          邮编: item.zip
         };
+        if (wantName) {
+          out["示例姓名"] = pick(d.last) + pick(d.first);
+          out["手机"] = pick(["138","139","150","186","188"]) + String(randInt(10000000, 99999999));
+        }
+        return out;
       }
 
-      const house = randInt(1, 4998);
-      const street = `${house} ${pick(d.streetWords)} ${pick(d.streetType)}`;
-      const emailBase = `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 999)}`;
-
-      if (region === "uk") {
-        return {
-          Name: `${first} ${last}`,
-          Street: street,
-          City: city[0],
-          County: city[1],
-          Postcode: city[2],
-          Phone: `07${randInt(700, 999)} ${randInt(100000, 999999)}`,
-          Email: `${emailBase}@${pick(d.emailDomain)}`,
-          Company: pick(d.company)
-        };
-      }
-
-      return {
-        Name: `${first} ${last}`,
-        Street: street,
-        City: city[0],
-        State: city[1],
-        ZIP: city[2],
-        Phone: `(${randInt(201, 989)}) ${randInt(201, 989)}-${randInt(1000, 9999)}`,
-        Email: `${emailBase}@${pick(d.emailDomain)}`,
-        Company: pick(d.company)
+      out = {
+        Street: line,
+        City: item.city
       };
+      if (region === "uk") {
+        out.County = item.region;
+        out.Postcode = item.zip;
+        if (wantName) out.Name = `${pick(d.first)} ${pick(d.last)}`;
+      } else {
+        out.State = item.state;
+        out.ZIP = item.zip;
+        if (wantName) out.Name = `${pick(d.first)} ${pick(d.last)}`;
+      }
+      return out;
     }
 
-    function stats() {
-      const d = DATA[region];
-      return `当前库：姓 ${d.last.length} × 名 ${d.first.length} × 街道词 ${d.streetWords.length} × 城市 ${d.cities.length}，理论组合远超普通社区规模。`;
+    function generateOne() {
+      const mode = document.getElementById("mode").value;
+      const pool = mode === "landmark" ? LANDMARKS[region] : STREETS[region].cities;
+      return formatOne(pick(pool), mode);
     }
 
     function render() {
-      const n = Math.max(1, Math.min(200, parseInt(document.getElementById("count").value, 10) || 12));
-      document.getElementById("stat").textContent = stats();
+      const n = Math.max(1, Math.min(50, parseInt(document.getElementById("count").value, 10) || 8));
+      const mode = document.getElementById("mode").value;
+      const pool = mode === "landmark" ? LANDMARKS[region] : STREETS[region].cities;
+      const streetCount = mode === "street"
+        ? pool.reduce((s, c) => s + c.streets.length, 0)
+        : 0;
+      document.getElementById("stat").textContent =
+        mode === "street"
+          ? `真实街道库：${pool.length} 城 × 约 ${streetCount} 条真实路名；门牌在 1–3998 随机。`
+          : `公开地标库：${pool.length} 处公共建筑 / 机构地址。`;
+
       const list = document.getElementById("list");
       list.innerHTML = "";
       const frag = document.createDocumentFragment();
@@ -410,6 +381,7 @@
     }
 
     document.getElementById("genBtn").onclick = render;
+    document.getElementById("mode").onchange = render;
     document.getElementById("clearBtn").onclick = () => {
       document.getElementById("list").innerHTML = "";
       document.getElementById("stat").textContent = "";
