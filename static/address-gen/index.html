@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随机地址生成器</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --card: #fffdf9;
+      --ink: #1f1a14;
+      --muted: #6b645c;
+      --line: #e4dccf;
+      --accent: #0f766e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+    }
+    .wrap { width: min(100% - 1.5rem, 820px); margin: 0 auto; padding: 1.25rem 0 2.5rem; }
+    header.site {
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+    }
+    header.site .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    h1 { font-size: 1.55rem; margin: 0; }
+    .lead { color: var(--muted); font-size: 0.95rem; }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-ghost {
+      background: var(--card);
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 1.15rem 0;
+      align-items: center;
+    }
+    .toolbar input[type="number"] {
+      width: 88px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 15px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      margin: 0.85rem 0;
+    }
+    .card h3 { margin: 0 0 0.55rem; font-size: 1.05rem; }
+    .row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 6px 12px;
+      font-size: 0.95rem;
+    }
+    .k { color: var(--muted); }
+    .v { word-break: break-all; }
+    .actions { display: flex; gap: 8px; margin-top: 0.85rem; flex-wrap: wrap; }
+    .actions .btn { padding: 8px 14px; font-size: 13px; }
+    .note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin: 1.25rem 0 0;
+    }
+    .tabs { display: flex; gap: 8px; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .tabs button {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .tabs button.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar .btn { width: 100%; }
+      .row { grid-template-columns: 1fr; }
+      .k { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <div>
+        <h1>随机地址生成器</h1>
+        <div class="lead">测试表单 · UI 演示 · 占位数据</div>
+      </div>
+      <a class="btn btn-ghost" href="/p/address-generator/" style="text-decoration:none">使用说明</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tabs" id="regionTabs">
+      <button type="button" class="on" data-region="us">美国</button>
+      <button type="button" data-region="uk">英国</button>
+      <button type="button" data-region="cn">中国</button>
+    </div>
+
+    <div class="toolbar">
+      <label class="lead">生成条数</label>
+      <input id="count" type="number" min="1" max="20" value="3" />
+      <button class="btn" id="genBtn">生成</button>
+      <button class="btn btn-ghost" id="copyAll">复制全部</button>
+      <button class="btn btn-ghost" id="clearBtn">清空</button>
+    </div>
+
+    <div id="list"></div>
+
+    <p class="note">
+      全部为<strong>随机虚构</strong>数据，仅用于开发测试与演示，请勿用于欺诈或违法用途。数据在本地浏览器生成，不会上传。
+    </p>
+  </div>
+
+  <script>
+    const DATA = {
+      us: {
+        first: ["James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","William","Elizabeth","David","Barbara","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen"],
+        last: ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin"],
+        streets: ["Oak","Maple","Cedar","Pine","Elm","Washington","Lake","Hill","Park","Sunset","Riverside","Highland","Madison","Jefferson","Lincoln","Franklin","Monroe","Adams","Cherry","Willow"],
+        streetType: ["St","Ave","Blvd","Dr","Ln","Rd","Ct","Pl","Way","Ter"],
+        cities: [
+          ["New York","NY","10001"],["Los Angeles","CA","90001"],["Chicago","IL","60601"],
+          ["Houston","TX","77001"],["Phoenix","AZ","85001"],["Philadelphia","PA","19101"],
+          ["San Antonio","TX","78201"],["San Diego","CA","92101"],["Dallas","TX","75201"],
+          ["Austin","TX","73301"],["Seattle","WA","98101"],["Denver","CO","80201"],
+          ["Boston","MA","02101"],["Atlanta","GA","30301"],["Miami","FL","33101"]
+        ],
+        company: ["Acme Corp","Globex","Initech","Umbrella","Stark Industries","Wayne Enterprises","Hooli","Pied Piper","Soylent","Vandelay"],
+        email: ["gmail.com","yahoo.com","outlook.com","icloud.com","proton.me"],
+        phone: () => {
+          const a = 200 + Math.floor(Math.random() * 799);
+          const b = 200 + Math.floor(Math.random() * 799);
+          const c = 1000 + Math.floor(Math.random() * 8999);
+          return `(${a}) ${b}-${c}`;
+        },
+        zip: (base) => base
+      },
+      uk: {
+        first: ["Oliver","Olivia","George","Amelia","Harry","Isla","Jack","Ava","Jacob","Emily","Noah","Sophia","Charlie","Grace","Thomas","Mia","Oscar","Poppy","William","Isabelle"],
+        last: ["Smith","Jones","Williams","Taylor","Brown","Davies","Wilson","Evans","Thomas","Roberts","Johnson","Lewis","Walker","Robinson","Wood","Thompson","White","Watson","Jackson","Wright"],
+        streets: ["High","Station","Church","London","Victoria","Park","Green","King","Queen","Mill","Bridge","Churchill","Wellington","Cromwell","Albion","Beacon","Crown","Manor","Orchard","Rose"],
+        streetType: ["Street","Road","Lane","Avenue","Close","Drive","Way","Place","Crescent","Gardens"],
+        cities: [
+          ["London","England","E1 6AN"],["Manchester","England","M1 1AE"],["Birmingham","England","B1 1BB"],
+          ["Leeds","England","LS1 1BA"],["Glasgow","Scotland","G1 1XQ"],["Edinburgh","Scotland","EH1 1YZ"],
+          ["Liverpool","England","L1 1JD"],["Bristol","England","BS1 1AA"],["Cardiff","Wales","CF10 1EP"],["Belfast","Northern Ireland","BT1 5GS"]
+        ],
+        company: ["Acme Ltd","Britannia Co","Thames Digital","Crown Solutions","Baker & Co","Cedar Holdings"],
+        email: ["gmail.com","outlook.com","btinternet.com","yahoo.co.uk"],
+        phone: () => {
+          const a = 700 + Math.floor(Math.random() * 299);
+          const b = Math.floor(100000 + Math.random() * 899999);
+          return `07${String(a).slice(1)} ${b}`;
+        },
+        zip: (base) => base
+      },
+      cn: {
+        first: ["伟","芳","娜","敏","静","丽","强","磊","军","洋","勇","艳","杰","娟","涛","明","超","秀英","霞","平"],
+        last: ["王","李","张","刘","陈","杨","黄","赵","周","吴","徐","孙","马","朱","胡","郭","何","高","林","罗"],
+        streets: ["中山","解放","人民","建设","和平","文化","青年","站前","滨江","南山","东风","光明","团结","前进","幸福"],
+        streetType: ["路","街","大道","巷"],
+        cities: [
+          ["上海市","上海","200000","浦东新区"],
+          ["北京市","北京","100000","海淀区"],
+          ["广州市","广东","510000","天河区"],
+          ["深圳市","广东","518000","南山区"],
+          ["杭州市","浙江","310000","西湖区"],
+          ["成都市","四川","610000","武侯区"],
+          ["武汉市","湖北","430000","洪山区"],
+          ["西安市","陕西","710000","雁塔区"],
+          ["南京市","江苏","210000","鼓楼区"],
+          ["重庆市","重庆","400000","渝中区"]
+        ],
+        company: ["蓝天科技","远航信息","云帆网络","星辰工作室","启明数据","汇通软件"],
+        email: ["qq.com","163.com","126.com","gmail.com"],
+        phone: () => {
+          const p = ["138","139","150","151","186","188","199"];
+          const head = p[Math.floor(Math.random() * p.length)];
+          const rest = String(Math.floor(10000000 + Math.random() * 89999999));
+          return head + rest;
+        },
+        zip: (base) => base
+      }
+    };
+
+    let region = "us";
+
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateOne() {
+      const d = DATA[region];
+      const first = pick(d.first);
+      const last = pick(d.last);
+      const city = pick(d.cities);
+      const num = 1 + Math.floor(Math.random() * 1998);
+      const street = `${num} ${pick(d.streets)} ${pick(d.streetType)}`;
+      const email =
+        region === "cn"
+          ? `${Math.floor(10000 + Math.random() * 89999)}${pick(d.email)}`.replace(/^/, "") 
+          : `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(Math.random() * 99)}@${pick(d.email)}`;
+
+      if (region === "cn") {
+        return {
+          姓名: last + first,
+          手机: d.phone(),
+          省市: city[0],
+          区县: city[3] || "",
+          地址: `${pick(d.streets)}${pick(d.streetType)}${1 + Math.floor(Math.random() * 200)}号`,
+          邮编: city[2],
+          邮箱: `${Math.floor(10000 + Math.random() * 89999)}@${pick(d.email)}`,
+          公司: pick(d.company)
+        };
+      }
+
+      if (region === "uk") {
+        return {
+          Name: `${first} ${last}`,
+          Street: street,
+          City: city[0],
+          County: city[1],
+          Postcode: city[2],
+          Phone: d.phone(),
+          Email: `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(Math.random() * 99)}@${pick(d.email)}`,
+          Company: pick(d.company)
+        };
+      }
+
+      return {
+        Name: `${first} ${last}`,
+        Street: street,
+        City: city[0],
+        State: city[1],
+        ZIP: city[2],
+        Phone: d.phone(),
+        Email: `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(Math.random() * 99)}@${pick(d.email)}`,
+        Company: pick(d.company)
+      };
+    }
+
+    function render() {
+      const n = Math.max(1, Math.min(20, parseInt(document.getElementById("count").value, 10) || 3));
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      for (let i = 0; i < n; i++) {
+        const data = generateOne();
+        const card = document.createElement("div");
+        card.className = "card";
+        const h = document.createElement("h3");
+        h.textContent = `地址 #${i + 1}`;
+        card.appendChild(h);
+        const row = document.createElement("div");
+        row.className = "row";
+        Object.keys(data).forEach((k) => {
+          const a = document.createElement("div");
+          a.className = "k";
+          a.textContent = k;
+          const b = document.createElement("div");
+          b.className = "v";
+          b.textContent = data[k];
+          row.appendChild(a);
+          row.appendChild(b);
+        });
+        card.appendChild(row);
+        const act = document.createElement("div");
+        act.className = "actions";
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "btn btn-ghost";
+        copyBtn.textContent = "复制本条";
+        copyBtn.onclick = () => {
+          const text = Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n");
+          navigator.clipboard.writeText(text);
+          copyBtn.textContent = "已复制";
+          setTimeout(() => (copyBtn.textContent = "复制本条"), 1200);
+        };
+        act.appendChild(copyBtn);
+        card.appendChild(act);
+        list.appendChild(card);
+      }
+
+    }
+
+    document.getElementById("genBtn").onclick = render;
+    document.getElementById("clearBtn").onclick = () => {
+      document.getElementById("list").innerHTML = "";
+    };
+    document.getElementById("copyAll").onclick = async () => {
+      const cards = document.querySelectorAll("#list .card");
+      const blocks = [];
+      cards.forEach((c) => {
+        const parts = [];
+        c.querySelectorAll(".row .k, .row .v").forEach((el) => {
+          if (el.classList.contains("k")) parts.push(el.textContent + ": ");
+          else {
+            if (parts.length) parts[parts.length - 1] += el.textContent;
+            blocks.push(parts[parts.length - 1]);
+          }
+        });
+        blocks.push("");
+      });
+      // simpler: rebuild from DOM rows
+      const out = [];
+      cards.forEach((c) => {
+        const ks = [...c.querySelectorAll(".k")].map((e) => e.textContent);
+        const vs = [...c.querySelectorAll(".v")].map((e) => e.textContent);
+        ks.forEach((k, i) => out.push(`${k}: ${vs[i]}`));
+        out.push("");
+      });
+      await navigator.clipboard.writeText(out.join("\n"));
+      document.getElementById("copyAll").textContent = "已复制";
+      setTimeout(() => (document.getElementById("copyAll").textContent = "复制全部"), 1200);
+    };
+
+    document.querySelectorAll("#regionTabs [data-region]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        region = btn.getAttribute("data-region");
+        document.querySelectorAll("#regionTabs [data-region]").forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
