@@ -1,7 +1,7 @@
 ---
 title: "随机地址生成器"
 slug: address-gen
-date: 2026-10-14
+date: 2026-10-19
 description: "真实城市街道 / 公开地标地址生成，用于测试与演示。"
 ---
 
