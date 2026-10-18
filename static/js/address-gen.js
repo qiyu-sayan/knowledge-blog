@@ -194,7 +194,7 @@
         const act = document.createElement("div");
         act.className = "addr-actions";
         const copyBtn = document.createElement("button");
-        copyBtn.className = "btn btn-ghost";
+        copyBtn.className = "btn";
         copyBtn.textContent = "复制本条";
         copyBtn.onclick = () => {
           const text = Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n");
