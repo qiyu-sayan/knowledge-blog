@@ -21,7 +21,7 @@
       color: var(--ink);
       line-height: 1.7;
     }
-    .wrap { width: min(100% - 1.5rem, 820px); margin: 0 auto; padding: 1.25rem 0 2.5rem; }
+    .wrap { width: min(100% - 1.5rem, 860px); margin: 0 auto; padding: 1.25rem 0 2.5rem; }
     header.site {
       background: var(--card);
       border-bottom: 1px solid var(--line);
@@ -58,7 +58,7 @@
       align-items: center;
     }
     .toolbar input[type="number"] {
-      width: 88px;
+      width: 100px;
       padding: 10px 12px;
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -69,18 +69,18 @@
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 1rem 1.15rem;
-      margin: 0.85rem 0;
+      margin: 0.75rem 0;
     }
-    .card h3 { margin: 0 0 0.55rem; font-size: 1.05rem; }
+    .card h3 { margin: 0 0 0.55rem; font-size: 1.02rem; }
     .row {
       display: grid;
-      grid-template-columns: 92px 1fr;
+      grid-template-columns: 100px 1fr;
       gap: 6px 12px;
       font-size: 0.95rem;
     }
     .k { color: var(--muted); }
     .v { word-break: break-all; }
-    .actions { display: flex; gap: 8px; margin-top: 0.85rem; flex-wrap: wrap; }
+    .actions { display: flex; gap: 8px; margin-top: 0.75rem; flex-wrap: wrap; }
     .actions .btn { padding: 8px 14px; font-size: 13px; }
     .note {
       color: var(--muted);
@@ -102,6 +102,15 @@
       color: #fff;
       font-weight: 600;
     }
+    .stat {
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      color: #9a3412;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+      font-size: 0.92rem;
+    }
     @media (max-width: 640px) {
       .toolbar { flex-direction: column; align-items: stretch; }
       .toolbar .btn { width: 100%; }
@@ -115,7 +124,7 @@
     <div class="wrap">
       <div>
         <h1>随机地址生成器</h1>
-        <div class="lead">测试表单 · UI 演示 · 占位数据</div>
+        <div class="lead">虚拟城市 · 多街区多门牌 · 测试 / 演示用</div>
       </div>
       <a class="btn btn-ghost" href="/p/address-generator/" style="text-decoration:none">使用说明</a>
     </div>
@@ -129,89 +138,163 @@
     </div>
 
     <div class="toolbar">
-      <label class="lead">生成条数</label>
-      <input id="count" type="number" min="1" max="20" value="3" />
+      <label class="lead">条数（最多 200）</label>
+      <input id="count" type="number" min="1" max="200" value="12" />
       <button class="btn" id="genBtn">生成</button>
       <button class="btn btn-ghost" id="copyAll">复制全部</button>
       <button class="btn btn-ghost" id="clearBtn">清空</button>
     </div>
 
+    <div id="stat" class="stat"></div>
     <div id="list"></div>
 
     <p class="note">
-      全部为<strong>随机虚构</strong>数据，仅用于开发测试与演示，请勿用于欺诈或违法用途。数据在本地浏览器生成，不会上传。
+      数据为<strong>程序虚构拼装</strong>（扩大姓氏 / 街道 / 城市池），不是真实户主档案。仅供开发测试与演示。
     </p>
   </div>
 
   <script>
+    /* 大规模虚构库：同一城市下大量街道 × 门牌，避免「只有几条街」的塑料感 */
     const DATA = {
       us: {
-        first: ["James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","William","Elizabeth","David","Barbara","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen"],
-        last: ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin"],
-        streets: ["Oak","Maple","Cedar","Pine","Elm","Washington","Lake","Hill","Park","Sunset","Riverside","Highland","Madison","Jefferson","Lincoln","Franklin","Monroe","Adams","Cherry","Willow"],
-        streetType: ["St","Ave","Blvd","Dr","Ln","Rd","Ct","Pl","Way","Ter"],
+        first: [
+          "James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","William","Elizabeth",
+          "David","Barbara","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen",
+          "Daniel","Nancy","Matthew","Lisa","Anthony","Betty","Mark","Margaret","Donald","Sandra",
+          "Steven","Ashley","Andrew","Kimberly","Kenneth","Emily","Joshua","Donna","Kevin","Michelle",
+          "Brian","Carol","George","Amanda","Timothy","Melissa","Ronald","Deborah","Jason","Stephanie",
+          "Edward","Rebecca","Jeffrey","Sharon","Ryan","Laura","Jacob","Cynthia","Gary","Kathleen",
+          "Nicholas","Amy","Eric","Angela","Jonathan","Shirley","Stephen","Anna","Larry","Ruth",
+          "Justin","Brenda","Scott","Pamela","Brandon","Nicole","Benjamin","Katherine","Samuel","Samantha",
+          "Gregory","Christine","Alexander","Emma","Patrick","Catherine","Frank","Rachel","Raymond","Janet",
+          "Jack","Maria","Dennis","Diane","Jerry","Carolyn","Tyler","Vanessa","Aaron","Julie"
+        ],
+        last: [
+          "Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez",
+          "Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin",
+          "Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson",
+          "Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores",
+          "Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts",
+          "Gomez","Phillips","Evans","Turner","Diaz","Parker","Cruz","Edwards","Collins","Reyes",
+          "Stewart","Morris","Morales","Murphy","Cook","Rogers","Gutierrez","Ortiz","Morgan","Cooper",
+          "Peterson","Bailey","Reed","Kelly","Howard","Ramos","Kim","Cox","Ward","Richardson",
+          "Watson","Brooks","Chavez","Wood","James","Bennett","Gray","Mendoza","Ruiz","Hughes",
+          "Price","Alvarez","Castillo","Sanders","Patel","Myers","Long","Ross","Foster","Jimenez"
+        ],
+        streetWords: [
+          "Oak","Maple","Cedar","Pine","Elm","Willow","Birch","Walnut","Chestnut","Poplar",
+          "Washington","Jefferson","Lincoln","Madison","Monroe","Adams","Franklin","Jackson","Harrison","Wilson",
+          "Lake","Hill","Park","Sunset","Sunrise","Riverside","Brookside","Highland","Meadow","Prairie",
+          "North","South","East","West","Cherry","Apple","Peach","Plum","Magnolia","Dogwood",
+          "Spring","Summer","Autumn","Winter","Garden","Orchard","Vine","Creek","Valley","Ridge",
+          "College","University","School","Church","Market","Mill","Bridge","Station","Harbor","Bay",
+          "Parkview","Lakewood","Hillcrest","Fairview","Pleasant","Prospect","Summit","Canyon","Copper","Silver",
+          "Golden","Iron","Stone","Brick","Lumber","Cotton","Wheat","Corn","Maplewood","Pinecrest",
+          "Aspen","Cypress","Juniper","Laurel","Olive","Sycamore","Redwood","Sequoia","Tamarack","Catalpa",
+          "Franklin","Liberty","Freedom","Patriot","Union","Constitution","Independence","Memorial","Veterans","Peace"
+        ],
+        streetType: ["St","Ave","Blvd","Dr","Ln","Rd","Ct","Pl","Way","Ter","Cir","Hwy","Pkwy"],
         cities: [
           ["New York","NY","10001"],["Los Angeles","CA","90001"],["Chicago","IL","60601"],
           ["Houston","TX","77001"],["Phoenix","AZ","85001"],["Philadelphia","PA","19101"],
           ["San Antonio","TX","78201"],["San Diego","CA","92101"],["Dallas","TX","75201"],
           ["Austin","TX","73301"],["Seattle","WA","98101"],["Denver","CO","80201"],
-          ["Boston","MA","02101"],["Atlanta","GA","30301"],["Miami","FL","33101"]
+          ["Boston","MA","02101"],["Atlanta","GA","30301"],["Miami","FL","33101"],
+          ["Portland","OR","97201"],["Nashville","TN","37201"],["Las Vegas","NV","89101"],
+          ["Minneapolis","MN","55401"],["Charlotte","NC","28201"],["Salt Lake City","UT","84101"],
+          ["Kansas City","MO","64101"],["Columbus","OH","43201"],["Indianapolis","IN","46201"],
+          ["San Francisco","CA","94101"],["Detroit","MI","48201"],["Memphis","TN","38101"],
+          ["Baltimore","MD","21201"],["Milwaukee","WI","53201"],["Albuquerque","NM","87101"]
         ],
-        company: ["Acme Corp","Globex","Initech","Umbrella","Stark Industries","Wayne Enterprises","Hooli","Pied Piper","Soylent","Vandelay"],
-        email: ["gmail.com","yahoo.com","outlook.com","icloud.com","proton.me"],
-        phone: () => {
-          const a = 200 + Math.floor(Math.random() * 799);
-          const b = 200 + Math.floor(Math.random() * 799);
-          const c = 1000 + Math.floor(Math.random() * 8999);
-          return `(${a}) ${b}-${c}`;
-        },
-        zip: (base) => base
+        company: [
+          "Acme Corp","Globex LLC","Initech","Stark Industries","Wayne Enterprises","Hooli","Pied Piper",
+          "Soylent Inc","Vandelay Industries","Umbrella Group","Northwind Traders","Contoso Ltd",
+          "Aperture Science","Black Mesa","Cyberdyne Systems","Oscorp","LexCorp","Daily Planet"
+        ],
+        emailDomain: ["gmail.com","yahoo.com","outlook.com","icloud.com","proton.me","aol.com","hotmail.com"]
       },
       uk: {
-        first: ["Oliver","Olivia","George","Amelia","Harry","Isla","Jack","Ava","Jacob","Emily","Noah","Sophia","Charlie","Grace","Thomas","Mia","Oscar","Poppy","William","Isabelle"],
-        last: ["Smith","Jones","Williams","Taylor","Brown","Davies","Wilson","Evans","Thomas","Roberts","Johnson","Lewis","Walker","Robinson","Wood","Thompson","White","Watson","Jackson","Wright"],
-        streets: ["High","Station","Church","London","Victoria","Park","Green","King","Queen","Mill","Bridge","Churchill","Wellington","Cromwell","Albion","Beacon","Crown","Manor","Orchard","Rose"],
-        streetType: ["Street","Road","Lane","Avenue","Close","Drive","Way","Place","Crescent","Gardens"],
+        first: [
+          "Oliver","Olivia","George","Amelia","Harry","Isla","Jack","Ava","Jacob","Emily",
+          "Noah","Sophia","Charlie","Grace","Thomas","Mia","Oscar","Poppy","William","Isabelle",
+          "James","Lily","Leo","Freya","Alfie","Sophie","Henry","Isabella","Joshua","Ruby",
+          "Daniel","Chloe","Samuel","Evie","Alexander","Ella","Joseph","Florence","David","Evie",
+          "Edward","Millie","Lucas","Phoebe","Matthew","Hannah","Ethan","Lucy","Dylan","Georgia",
+          "Finley","Holly","Harvey","Lydia","Max","Abigail","Sebastian","Eleanor","Adam","Martha",
+          "Andrew","Rebecca","Benjamin","Megan","Callum","Amber","Connor","Anna","Edward","Charlotte"
+        ],
+        last: [
+          "Smith","Jones","Williams","Taylor","Brown","Davies","Wilson","Evans","Thomas","Roberts",
+          "Johnson","Lewis","Walker","Robinson","Wood","Thompson","White","Watson","Jackson","Wright",
+          "Green","Harris","Cooper","King","Lee","Martin","Clarke","James","Morgan","Hughes",
+          "Edwards","Hill","Moore","Clark","Harrison","Scott","Young","Morris","Hall","Ward",
+          "Turner","Carter","Phillips","Mitchell","Patel","Adams","Campbell","Anderson","Allen","Cook",
+          "Bailey","Parker","Miller","Davis","Murphy","Price","Bell","Baker","Griffiths","Kelly",
+          "Chapman","Marshall","Webster","Simpson","Perry","Barnes","Foster","Bennett","Chapman","Reid"
+        ],
+        streetWords: [
+          "High","Station","Church","London","Victoria","Park","Green","King","Queen","Mill",
+          "Bridge","Churchill","Wellington","Cromwell","Albion","Beacon","Crown","Manor","Orchard","Rose",
+          "Albert","Alexandra","Charles","Edward","George","Henry","Mary","John","William","Elizabeth",
+          "Springfield","Riverside","Hilltop","Fairview","Pleasant","Broadway","Chester","Warwick","Norfolk","Kent",
+          "Oxford","Cambridge","Eton","Harrow","Richmond","Windsor","Carlisle","Durham","Lancaster","York",
+          "Beech","Ash","Elm","Willow","Hazel","Rowan","Cedar","Laurel","Ivy","Heather",
+          "Chapel","Abbey","Castle","Market","Town","Cross","Nelson","Trafalgar","Marlborough","Gladstone",
+          "Springfield","Station","Terrace","Gardens","Grove","Close","Crescent","Meadow","Fern","Willowbrook"
+        ],
+        streetType: ["Street","Road","Lane","Avenue","Close","Drive","Way","Place","Crescent","Gardens","Grove","Hill","Terrace","Walk"],
         cities: [
           ["London","England","E1 6AN"],["Manchester","England","M1 1AE"],["Birmingham","England","B1 1BB"],
           ["Leeds","England","LS1 1BA"],["Glasgow","Scotland","G1 1XQ"],["Edinburgh","Scotland","EH1 1YZ"],
-          ["Liverpool","England","L1 1JD"],["Bristol","England","BS1 1AA"],["Cardiff","Wales","CF10 1EP"],["Belfast","Northern Ireland","BT1 5GS"]
+          ["Liverpool","England","L1 1JD"],["Bristol","England","BS1 1AA"],["Cardiff","Wales","CF10 1EP"],
+          ["Belfast","Northern Ireland","BT1 5GS"],["Sheffield","England","S1 1AA"],["Newcastle","England","NE1 1EE"],
+          ["Nottingham","England","NG1 1AA"],["Brighton","England","BN1 1AE"],["Cambridge","England","CB1 1BH"],
+          ["Oxford","England","OX1 1AA"],["York","England","YO1 7HH"],["Bath","England","BA1 1LZ"]
         ],
-        company: ["Acme Ltd","Britannia Co","Thames Digital","Crown Solutions","Baker & Co","Cedar Holdings"],
-        email: ["gmail.com","outlook.com","btinternet.com","yahoo.co.uk"],
-        phone: () => {
-          const a = 700 + Math.floor(Math.random() * 299);
-          const b = Math.floor(100000 + Math.random() * 899999);
-          return `07${String(a).slice(1)} ${b}`;
-        },
-        zip: (base) => base
+        company: [
+          "Acme Ltd","Britannia Co","Thames Digital","Crown Solutions","Baker & Co","Cedar Holdings",
+          "Anglia Systems","Northgate Traders","Regent Partners","Kingsley Group"
+        ],
+        emailDomain: ["gmail.com","outlook.com","btinternet.com","yahoo.co.uk","hotmail.co.uk"]
       },
       cn: {
-        first: ["伟","芳","娜","敏","静","丽","强","磊","军","洋","勇","艳","杰","娟","涛","明","超","秀英","霞","平"],
-        last: ["王","李","张","刘","陈","杨","黄","赵","周","吴","徐","孙","马","朱","胡","郭","何","高","林","罗"],
-        streets: ["中山","解放","人民","建设","和平","文化","青年","站前","滨江","南山","东风","光明","团结","前进","幸福"],
-        streetType: ["路","街","大道","巷"],
-        cities: [
-          ["上海市","上海","200000","浦东新区"],
-          ["北京市","北京","100000","海淀区"],
-          ["广州市","广东","510000","天河区"],
-          ["深圳市","广东","518000","南山区"],
-          ["杭州市","浙江","310000","西湖区"],
-          ["成都市","四川","610000","武侯区"],
-          ["武汉市","湖北","430000","洪山区"],
-          ["西安市","陕西","710000","雁塔区"],
-          ["南京市","江苏","210000","鼓楼区"],
-          ["重庆市","重庆","400000","渝中区"]
+        last: [
+          "王","李","张","刘","陈","杨","黄","赵","周","吴","徐","孙","马","朱","胡","郭","何","高","林","罗",
+          "郑","梁","谢","宋","唐","许","韩","冯","邓","曹","彭","曾","肖","田","董","袁","潘","于","蒋","蔡",
+          "余","杜","叶","程","苏","魏","吕","丁","任","沈","姚","卢","姜","崔","钟","谭","陆","汪","范","金"
         ],
-        company: ["蓝天科技","远航信息","云帆网络","星辰工作室","启明数据","汇通软件"],
-        email: ["qq.com","163.com","126.com","gmail.com"],
-        phone: () => {
-          const p = ["138","139","150","151","186","188","199"];
-          const head = p[Math.floor(Math.random() * p.length)];
-          const rest = String(Math.floor(10000000 + Math.random() * 89999999));
-          return head + rest;
-        },
-        zip: (base) => base
+        first: [
+          "伟","芳","娜","敏","静","丽","强","磊","军","洋","勇","艳","杰","娟","涛","明","超","秀英","霞","平",
+          "刚","桂英","建华","文","华","国庆","志强","秀兰","丹","婷","浩","然","子轩","子涵","梓萱","诗涵",
+          "宇","航","雪","梅","鹏","飞","鑫","磊","婷婷","丹丹","俊","杰","琳","悦","欣","怡","博文","嘉怡",
+          "晓东","晓明","小燕","小龙","雅琴","建华","建军","春燕","晓红","志明","秀珍","玉兰","淑芬","金花"
+        ],
+        streets: [
+          "中山","解放","人民","建设","和平","文化","青年","站前","滨江","南山","东风","光明","团结","前进","幸福",
+          "长江","黄河","珠江","淮海","南京","北京","上海","天津","重庆","广州","深圳","杭州","苏州","无锡","常州",
+          "幸福里","建工","科苑","高新","创业","创新","软件","数码","航天","银河","光明","朝阳","向阳","红旗","工农",
+          "工业","农林","体育","音乐","美术","师范","大学","学院","科技","实验","示范","花园","湖滨","江滨","滨海",
+          "北环","南环","东环","西环","迎宾","兴华","裕华","振华","新华","兴安","裕安","朝阳路","人民南","解放北"
+        ],
+        streetType: ["路","街","大道","巷","里","弄"],
+        cities: [
+          ["上海市","上海","200000","浦东新区"],["上海市","上海","200000","徐汇区"],["上海市","上海","200000","静安区"],
+          ["北京市","北京","100000","海淀区"],["北京市","北京","100000","朝阳区"],["北京市","北京","100000","西城区"],
+          ["广州市","广东","510000","天河区"],["广州市","广东","510000","越秀区"],
+          ["深圳市","广东","518000","南山区"],["深圳市","广东","518000","福田区"],
+          ["杭州市","浙江","310000","西湖区"],["杭州市","浙江","310000","滨江区"],
+          ["成都市","四川","610000","武侯区"],["成都市","四川","610000","锦江区"],
+          ["武汉市","湖北","430000","洪山区"],["武汉市","湖北","430000","江汉区"],
+          ["西安市","陕西","710000","雁塔区"],["西安市","陕西","710000","碑林区"],
+          ["南京市","江苏","210000","鼓楼区"],["南京市","江苏","210000","玄武区"],
+          ["重庆市","重庆","400000","渝中区"],["重庆市","重庆","400000","江北区"],
+          ["苏州市","江苏","215000","工业园区"],["青岛市","山东","266000","市南区"]
+        ],
+        company: [
+          "蓝天科技","远航信息","云帆网络","星辰工作室","启明数据","汇通软件","华信电子","卓越教育",
+          "安居地产","康泰医疗","智行出行","味道餐饮","悦读书店","风行体育"
+        ],
+        emailDomain: ["qq.com","163.com","126.com","gmail.com","outlook.com","foxmail.com"]
       }
     };
 
@@ -221,30 +304,36 @@
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
+    function randInt(min, max) {
+      return min + Math.floor(Math.random() * (max - min + 1));
+    }
+
     function generateOne() {
       const d = DATA[region];
       const first = pick(d.first);
       const last = pick(d.last);
       const city = pick(d.cities);
-      const num = 1 + Math.floor(Math.random() * 1998);
-      const street = `${num} ${pick(d.streets)} ${pick(d.streetType)}`;
-      const email =
-        region === "cn"
-          ? `${Math.floor(10000 + Math.random() * 89999)}${pick(d.email)}`.replace(/^/, "") 
-          : `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(Math.random() * 99)}@${pick(d.email)}`;
 
       if (region === "cn") {
+        const street = pick(d.streets) + pick(d.streetType);
+        const num = randInt(1, 2888);
+        const unit = randInt(1, 28);
+        const room = randInt(101, 3206);
         return {
           姓名: last + first,
-          手机: d.phone(),
+          手机: pick(["138","139","150","151","186","188","199","177"]) + String(randInt(10000000, 99999999)),
           省市: city[0],
-          区县: city[3] || "",
-          地址: `${pick(d.streets)}${pick(d.streetType)}${1 + Math.floor(Math.random() * 200)}号`,
+          区县: city[3],
+          地址: `${street}${num}号 ${unit}幢 ${room}室`,
           邮编: city[2],
-          邮箱: `${Math.floor(10000 + Math.random() * 89999)}@${pick(d.email)}`,
+          邮箱: `${randInt(10000, 9999999)}@${pick(d.emailDomain)}`,
           公司: pick(d.company)
         };
       }
+
+      const house = randInt(1, 4998);
+      const street = `${house} ${pick(d.streetWords)} ${pick(d.streetType)}`;
+      const emailBase = `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 999)}`;
 
       if (region === "uk") {
         return {
@@ -253,8 +342,8 @@
           City: city[0],
           County: city[1],
           Postcode: city[2],
-          Phone: d.phone(),
-          Email: `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(Math.random() * 99)}@${pick(d.email)}`,
+          Phone: `07${randInt(700, 999)} ${randInt(100000, 999999)}`,
+          Email: `${emailBase}@${pick(d.emailDomain)}`,
           Company: pick(d.company)
         };
       }
@@ -265,22 +354,29 @@
         City: city[0],
         State: city[1],
         ZIP: city[2],
-        Phone: d.phone(),
-        Email: `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(Math.random() * 99)}@${pick(d.email)}`,
+        Phone: `(${randInt(201, 989)}) ${randInt(201, 989)}-${randInt(1000, 9999)}`,
+        Email: `${emailBase}@${pick(d.emailDomain)}`,
         Company: pick(d.company)
       };
     }
 
+    function stats() {
+      const d = DATA[region];
+      return `当前库：姓 ${d.last.length} × 名 ${d.first.length} × 街道词 ${d.streetWords.length} × 城市 ${d.cities.length}，理论组合远超普通社区规模。`;
+    }
+
     function render() {
-      const n = Math.max(1, Math.min(20, parseInt(document.getElementById("count").value, 10) || 3));
+      const n = Math.max(1, Math.min(200, parseInt(document.getElementById("count").value, 10) || 12));
+      document.getElementById("stat").textContent = stats();
       const list = document.getElementById("list");
       list.innerHTML = "";
+      const frag = document.createDocumentFragment();
       for (let i = 0; i < n; i++) {
         const data = generateOne();
         const card = document.createElement("div");
         card.className = "card";
         const h = document.createElement("h3");
-        h.textContent = `地址 #${i + 1}`;
+        h.textContent = `#${i + 1}`;
         card.appendChild(h);
         const row = document.createElement("div");
         row.className = "row";
@@ -308,30 +404,18 @@
         };
         act.appendChild(copyBtn);
         card.appendChild(act);
-        list.appendChild(card);
+        frag.appendChild(card);
       }
-
+      list.appendChild(frag);
     }
 
     document.getElementById("genBtn").onclick = render;
     document.getElementById("clearBtn").onclick = () => {
       document.getElementById("list").innerHTML = "";
+      document.getElementById("stat").textContent = "";
     };
     document.getElementById("copyAll").onclick = async () => {
       const cards = document.querySelectorAll("#list .card");
-      const blocks = [];
-      cards.forEach((c) => {
-        const parts = [];
-        c.querySelectorAll(".row .k, .row .v").forEach((el) => {
-          if (el.classList.contains("k")) parts.push(el.textContent + ": ");
-          else {
-            if (parts.length) parts[parts.length - 1] += el.textContent;
-            blocks.push(parts[parts.length - 1]);
-          }
-        });
-        blocks.push("");
-      });
-      // simpler: rebuild from DOM rows
       const out = [];
       cards.forEach((c) => {
         const ks = [...c.querySelectorAll(".k")].map((e) => e.textContent);
@@ -340,8 +424,9 @@
         out.push("");
       });
       await navigator.clipboard.writeText(out.join("\n"));
-      document.getElementById("copyAll").textContent = "已复制";
-      setTimeout(() => (document.getElementById("copyAll").textContent = "复制全部"), 1200);
+      const btn = document.getElementById("copyAll");
+      btn.textContent = "已复制";
+      setTimeout(() => (btn.textContent = "复制全部"), 1200);
     };
 
     document.querySelectorAll("#regionTabs [data-region]").forEach((btn) => {
