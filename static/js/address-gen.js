@@ -1,175 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>随机地址生成器</title>
-  <style>
-    :root {
-      --bg: #f7f4ef;
-      --card: #fffdf9;
-      --ink: #1f1a14;
-      --muted: #6b645c;
-      --line: #e4dccf;
-      --accent: #0f766e;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.7;
-    }
-    .wrap { width: min(100% - 1.5rem, 860px); margin: 0 auto; padding: 1.25rem 0 2.5rem; }
-    header.site {
-      background: var(--card);
-      border-bottom: 1px solid var(--line);
-    }
-    header.site .wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 0;
-    }
-    h1 { font-size: 1.55rem; margin: 0; }
-    .lead { color: var(--muted); font-size: 0.95rem; }
-    .btn {
-      border: none;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-size: 15px;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-ghost {
-      background: var(--card);
-      border: 1px solid var(--line);
-      color: var(--ink);
-    }
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 1.15rem 0;
-      align-items: center;
-    }
-    .toolbar input[type="number"],
-    .toolbar select {
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      font-size: 15px;
-    }
-    .toolbar input[type="number"] { width: 100px; }
-    .toolbar label.chk {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: var(--ink);
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 1rem 1.15rem;
-      margin: 0.75rem 0;
-    }
-    .card h3 { margin: 0 0 0.55rem; font-size: 1.02rem; }
-    .row {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 6px 12px;
-      font-size: 0.95rem;
-    }
-    .k { color: var(--muted); }
-    .v { word-break: break-all; }
-    .actions { display: flex; gap: 8px; margin-top: 0.75rem; flex-wrap: wrap; }
-    .actions .btn { padding: 8px 14px; font-size: 13px; }
-    .note {
-      color: var(--muted);
-      font-size: 0.88rem;
-      margin: 1.25rem 0 0;
-    }
-    .tabs { display: flex; gap: 8px; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    .tabs button {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--card);
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .tabs button.on {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      font-weight: 600;
-    }
-    .stat {
-      background: #fff7ed;
-      border: 1px solid #fdba74;
-      color: #9a3412;
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      margin: 0.75rem 0;
-      font-size: 0.92rem;
-    }
-    @media (max-width: 640px) {
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .toolbar .btn { width: 100%; }
-      .row { grid-template-columns: 1fr; }
-      .k { font-size: 0.82rem; }
-    }
-  </style>
-</head>
-<body>
-  <header class="site">
-    <div class="wrap">
-      <div>
-        <h1>随机地址生成器</h1>
-        <div class="lead">真实街道 / 公开地标 · 供测试与演示</div>
-      </div>
-      <a class="btn btn-ghost" href="/p/address-generator/" style="text-decoration:none">使用说明</a>
-    </div>
-  </header>
 
-  <div class="wrap">
-    <div class="tabs" id="regionTabs">
-      <button type="button" class="on" data-region="us">美国</button>
-      <button type="button" data-region="uk">英国</button>
-      <button type="button" data-region="cn">中国</button>
-    </div>
-
-    <div class="toolbar">
-      <label class="lead">模式</label>
-      <select id="mode">
-        <option value="street">真实街道（城市+真实路名+门牌）</option>
-        <option value="landmark">公开地标（大学/市政厅等）</option>
-      </select>
-      <label class="lead">条数</label>
-      <input id="count" type="number" min="1" max="50" value="8" />
-      <label class="chk"><input id="withName" type="checkbox" /> 附加随机人名（可选）</label>
-      <button class="btn" id="genBtn">生成</button>
-      <button class="btn btn-ghost" id="copyAll">复制全部</button>
-      <button class="btn btn-ghost" id="clearBtn">清空</button>
-    </div>
-
-    <div id="stat" class="stat"></div>
-    <div id="list"></div>
-
-    <p class="note">
-      <strong>真实街道</strong>模式：城市、路名取自真实地名，门牌号在该路上随机，地图上通常能找到道路；不保证每一门牌都精确对应某一户。<br />
-      <strong>公开地标</strong>模式：使用公开的学校、市政厅、图书馆等地址。<br />
-      不提供真实住户姓名与私人住址绑定数据。仅供测试演示。
-    </p>
-  </div>
-
-  <script>
     /* 真实城市 + 真实路名（常见市政道路），门牌在道路上随机 */
     const STREETS = {
       us: {
@@ -345,7 +174,7 @@
       for (let i = 0; i < n; i++) {
         const data = generateOne();
         const card = document.createElement("div");
-        card.className = "card";
+        card.className = "addr-card";
         const h = document.createElement("h3");
         h.textContent = `#${i + 1}`;
         card.appendChild(h);
@@ -353,17 +182,17 @@
         row.className = "row";
         Object.keys(data).forEach((k) => {
           const a = document.createElement("div");
-          a.className = "k";
+          a.className = "addr-k";
           a.textContent = k;
           const b = document.createElement("div");
-          b.className = "v";
+          b.className = "addr-v";
           b.textContent = data[k];
           row.appendChild(a);
           row.appendChild(b);
         });
         card.appendChild(row);
         const act = document.createElement("div");
-        act.className = "actions";
+        act.className = "addr-actions";
         const copyBtn = document.createElement("button");
         copyBtn.className = "btn btn-ghost";
         copyBtn.textContent = "复制本条";
@@ -387,11 +216,11 @@
       document.getElementById("stat").textContent = "";
     };
     document.getElementById("copyAll").onclick = async () => {
-      const cards = document.querySelectorAll("#list .card");
+      const cards = document.querySelectorAll("#list .addr-card");
       const out = [];
       cards.forEach((c) => {
-        const ks = [...c.querySelectorAll(".k")].map((e) => e.textContent);
-        const vs = [...c.querySelectorAll(".v")].map((e) => e.textContent);
+        const ks = [...c.querySelectorAll(".addr-k")].map((e) => e.textContent);
+        const vs = [...c.querySelectorAll(".addr-v")].map((e) => e.textContent);
         ks.forEach((k, i) => out.push(`${k}: ${vs[i]}`));
         out.push("");
       });
@@ -411,6 +240,4 @@
     });
 
     render();
-  </script>
-</body>
-</html>
+  
