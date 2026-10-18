@@ -601,3 +601,21 @@ body {
     width: 320px;
   }
 }
+
+/* 底图切换 */
+.mapbase-row {
+  display: flex;
+  gap: 8px;
+}
+.mapbase-row .mini-btn {
+  flex: 1;
+  width: auto;
+  padding: 10px 8px;
+  font-size: 14px;
+}
+.mapbase-row .mini-btn.on {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}

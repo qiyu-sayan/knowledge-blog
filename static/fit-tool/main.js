@@ -27,25 +27,41 @@ function ttdUrl(layer, key) {
   );
 }
 
+// basemap: "sat"（卫星，默认，看起来更新）| "vec"（矢量）
+let mapBase = "sat";
+
 function applyTtdKey(key) {
   if (vecLayer) map.removeLayer(vecLayer);
   if (cvaLayer) map.removeLayer(cvaLayer);
-  vecLayer = L.tileLayer(ttdUrl("vec_w", key), {
+  const opt = {
     subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
     minZoom: 5,
     maxZoom: 20,
-    maxNativeZoom: 18,
+    maxNativeZoom: mapBase === "sat" ? 18 : 18,
     attribution: "© 天地图 GS (2025) 1508号 - 甲测资字11110974 | 数据来源: 自然资源部 & NavInfo"
-  }).addTo(map);
-  cvaLayer = L.tileLayer(ttdUrl("cva_w", key), {
-    subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+  };
+  // 卫星：img_w 底图 + cia_w 注记；矢量：vec_w + cva_w
+  const baseName = mapBase === "sat" ? "img_w" : "vec_w";
+  const labelName = mapBase === "sat" ? "cia_w" : "cva_w";
+  vecLayer = L.tileLayer(ttdUrl(baseName, key), opt).addTo(map);
+  cvaLayer = L.tileLayer(ttdUrl(labelName, key), {
+    subdomains: opt.subdomains,
     minZoom: 5,
     maxZoom: 20,
     maxNativeZoom: 17
   }).addTo(map);
 }
 
+function setMapBase(mode) {
+  mapBase = mode === "vec" ? "vec" : "sat";
+  applyTtdKey(TTD_KEY);
+  document.querySelectorAll("[data-mapbase]").forEach((el) => {
+    el.classList.toggle("on", el.getAttribute("data-mapbase") === mapBase);
+  });
+}
+
 window.__applyTtdKey = applyTtdKey;
+window.__setMapBase = setMapBase;
 
 map.attributionControl.setPrefix(
   '<div style="text-align: right; margin-bottom: 4px;">' +
@@ -591,4 +607,9 @@ rebuildExportTimes();
 // 直接加载地图（无登录门）
 document.addEventListener("DOMContentLoaded", () => {
   applyTtdKey(TTD_KEY);
+});
+
+// 底图切换按钮
+document.querySelectorAll("[data-mapbase]").forEach((btn) => {
+  btn.addEventListener("click", () => setMapBase(btn.getAttribute("data-mapbase")));
 });
