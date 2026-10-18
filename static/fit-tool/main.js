@@ -83,14 +83,14 @@ function applyMapBase() {
     baseLayer = L.tileLayer(
       "https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",
       Object.assign({}, common, {
-        subdomains: ["01", "02", "03", "04"],
+        subdomains: ["1", "2", "3", "4"],
         maxNativeZoom: 18
       })
     ).addTo(map);
     labelLayer = L.tileLayer(
       "https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}",
       {
-        subdomains: ["01", "02", "03", "04"],
+        subdomains: ["1", "2", "3", "4"],
         minZoom: 5,
         maxZoom: 20,
         maxNativeZoom: 17
