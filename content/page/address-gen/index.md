@@ -137,10 +137,9 @@ description: "真实城市街道 / 公开地标地址生成，用于测试与演
 <div class="addr-wrap">
   <p>用<strong>真实城市、真实路名</strong>或<strong>公开地标</strong>生成地址；门牌为示意号段。说明见 <a href="/p/address-generator/">文章</a>。</p>
 
-  <div class="addr-tabs" id="regionTabs">
-    <button type="button" class="on" data-region="us">美国</button>
-    <button type="button" data-region="uk">英国</button>
-    <button type="button" data-region="cn">中国</button>
+  <div class="addr-tabs">
+    <label style="align-self:center">国家</label>
+    <select id="country"></select>
   </div>
 
   <div class="addr-toolbar">
