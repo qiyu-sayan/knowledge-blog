@@ -27,41 +27,119 @@ function ttdUrl(layer, key) {
   );
 }
 
-// basemap: "sat"（卫星，默认，看起来更新）| "vec"（矢量）
-let mapBase = "sat";
+// 底图：ttd-vec / ttd-sat / amap-vec / amap-sat（高德为 GCJ-02）
+let mapBase = "amap-vec";
+let baseLayer = null;
+let labelLayer = null;
 
-function applyTtdKey(key) {
-  if (vecLayer) map.removeLayer(vecLayer);
-  if (cvaLayer) map.removeLayer(cvaLayer);
-  const opt = {
-    subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+// 高德开放平台（Web JS Key；瓦片走公开切片，Key 备用于检索扩展）
+const AMAP_KEY = "9f52b14494fddce980073932e9b3e9c6";
+const AMAP_JS_CODE = "1b9575213e8e62e82337b4533fdf5bc5";
+
+function ttdUrl(layer, key) {
+  return (
+    "https://t{s}.tianditu.gov.cn/" + layer +
+    "/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=" + layer.split("_")[0] +
+    "&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
+    "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=" + encodeURIComponent(key)
+  );
+}
+
+function applyMapBase() {
+  if (baseLayer) map.removeLayer(baseLayer);
+  if (labelLayer) map.removeLayer(labelLayer);
+
+  const key = TTD_KEY;
+  const common = {
     minZoom: 5,
     maxZoom: 20,
-    maxNativeZoom: mapBase === "sat" ? 18 : 18,
-    attribution: "© 天地图 GS (2025) 1508号 - 甲测资字11110974 | 数据来源: 自然资源部 & NavInfo"
+    attribution: "© 天地图 / © 高德地图 GS(2024) 590号"
   };
-  // 卫星：img_w 底图 + cia_w 注记；矢量：vec_w + cva_w
-  const baseName = mapBase === "sat" ? "img_w" : "vec_w";
-  const labelName = mapBase === "sat" ? "cia_w" : "cva_w";
-  vecLayer = L.tileLayer(ttdUrl(baseName, key), opt).addTo(map);
-  cvaLayer = L.tileLayer(ttdUrl(labelName, key), {
-    subdomains: opt.subdomains,
-    minZoom: 5,
-    maxZoom: 20,
-    maxNativeZoom: 17
-  }).addTo(map);
+
+  if (mapBase === "ttd-vec" || mapBase === "ttd-sat") {
+    const sat = mapBase === "ttd-sat";
+    baseLayer = L.tileLayer(
+      ttdUrl(sat ? "img_w" : "vec_w", key),
+      Object.assign({}, common, {
+        subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+        maxNativeZoom: 18
+      })
+    ).addTo(map);
+    labelLayer = L.tileLayer(
+      ttdUrl(sat ? "cia_w" : "cva_w", key),
+      {
+        subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+        minZoom: 5,
+        maxZoom: 20,
+        maxNativeZoom: 17
+      }
+    ).addTo(map);
+    return;
+  }
+
+  // 高德：矢量 style=7，卫星 style=6+8 注记
+  const sat = mapBase === "amap-sat";
+  if (sat) {
+    baseLayer = L.tileLayer(
+      "https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",
+      Object.assign({}, common, {
+        subdomains: ["01", "02", "03", "04"],
+        maxNativeZoom: 18
+      })
+    ).addTo(map);
+    labelLayer = L.tileLayer(
+      "https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}",
+      {
+        subdomains: ["01", "02", "03", "04"],
+        minZoom: 5,
+        maxZoom: 20,
+        maxNativeZoom: 17
+      }
+    ).addTo(map);
+  } else {
+    baseLayer = L.tileLayer(
+      "https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+      Object.assign({}, common, {
+        subdomains: ["1", "2", "3", "4"],
+        maxNativeZoom: 18
+      })
+    ).addTo(map);
+    labelLayer = null;
+  }
 }
 
 function setMapBase(mode) {
-  mapBase = mode === "vec" ? "vec" : "sat";
-  applyTtdKey(TTD_KEY);
+  const allowed = ["ttd-vec", "ttd-sat", "amap-vec", "amap-sat"];
+  mapBase = allowed.indexOf(mode) >= 0 ? mode : "amap-vec";
+  applyMapBase();
   document.querySelectorAll("[data-mapbase]").forEach((el) => {
     el.classList.toggle("on", el.getAttribute("data-mapbase") === mapBase);
   });
 }
 
-window.__applyTtdKey = applyTtdKey;
+// 与 map 交互时统一转成 WGS-84（FIT/定位用）
+function mapClickToWgs(lat, lng) {
+  if (mapBase === "amap-vec" || mapBase === "amap-sat") {
+    return window.Coord.gcj02ToWgs84(lng, lat);
+  }
+  return { lng: lng, lat: lat };
+}
+
+// WGS-84 显示到当前底图
+function wgsToMapLatLng(lat, lng) {
+  if (mapBase === "amap-vec" || mapBase === "amap-sat") {
+    return window.Coord.wgs84ToGcj02(lng, lat);
+  }
+  return { lng: lng, lat: lat };
+}
+
+window.__applyTtdKey = function () { applyMapBase(); };
 window.__setMapBase = setMapBase;
+window.__mapClickToWgs = mapClickToWgs;
+window.__wgsToMapLatLng = wgsToMapLatLng;
+window.__AMAP_KEY = AMAP_KEY;
+window.__AMAP_JS_CODE = AMAP_JS_CODE;
+
 
 map.attributionControl.setPrefix(
   '<div style="text-align: right; margin-bottom: 4px;">' +
@@ -88,9 +166,11 @@ function resetLocBtn() {
   }
 }
 
+// 参数为 WGS-84；高德底图会转 GCJ-02 再显示
 function placeLocationMarker(lat, lng, accuracy, title, jump) {
+  const show = wgsToMapLatLng(lat, lng);
   if (currentLocationMarker) map.removeLayer(currentLocationMarker);
-  currentLocationMarker = L.marker([lat, lng], {
+  currentLocationMarker = L.marker([show.lat, show.lng], {
     icon: L.divIcon({
       className: "current-location-marker",
       html: '<div class="location-pulse"></div>',
@@ -100,7 +180,14 @@ function placeLocationMarker(lat, lng, accuracy, title, jump) {
   currentLocationMarker.bindPopup(
     `<b>${title}</b><br>纬度: ${lat.toFixed(6)}<br>经度: ${lng.toFixed(6)}<br>精度: ±${Math.round(accuracy)} 米`
   ).openPopup();
-  if (jump !== false) map.setView([lat, lng], 16);
+  if (jump !== false) map.setView([show.lat, show.lng], 16);
+}
+
+function routeToMapLLs(points) {
+  return (points || []).map(function (p) {
+    const s = wgsToMapLatLng(p.lat, p.lng);
+    return [s.lat, s.lng];
+  });
 }
 
 // 天地图逆地理：把坐标变成「省市区」，让用户肉眼确认是否靠谱
@@ -405,9 +492,12 @@ function updateDistanceInfo() {
 }
 
 map.on("click", (e) => {
-  routePoints.push({ lat: e.latlng.lat, lng: e.latlng.lng });
-  if (polyline) polyline.setLatLngs(routePoints);
-  else polyline = L.polyline(routePoints, { color: "#ff5722" }).addTo(map);
+  // 统一存 WGS-84，生成 FIT 用；显示时再转到当前底图
+  const w = mapClickToWgs(e.latlng.lat, e.latlng.lng);
+  routePoints.push({ lat: w.lat, lng: w.lng });
+  const ll = routeToMapLLs(routePoints);
+  if (polyline) polyline.setLatLngs(ll);
+  else polyline = L.polyline(ll, { color: "#ff5722" }).addTo(map);
   updateMessage(`已添加点数：${routePoints.length}`);
   updateDistanceInfo();
 });
