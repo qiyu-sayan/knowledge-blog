@@ -2,5 +2,13 @@
   "name": "knowledge-blog",
   "private": true,
   "version": "1.0.0",
-  "description": "qiyu-library static blog"
+  "description": "qiyu-library static blog with PDF tool",
+  "type": "module",
+  "scripts": {
+    "build": "hugo --minify",
+    "dev": "hugo server"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
 }
